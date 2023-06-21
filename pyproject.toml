@@ -56,6 +56,14 @@ test = [
     'pytest-cov',
 ]
 
+[project.entry-points.'cernml.optimizers']
+BOBYQA = 'cernml.optimizers.bobyqa:Bobyqa'
+COBYLA = 'cernml.optimizers.scipy:Cobyla'
+Powell = 'cernml.optimizers.scipy:Powell'
+NelderMeadSimplex = 'cernml.optimizers.scipy:NelderMeadSimplex'
+SkoptBayesian = 'cernml.optimizers.skopt:SkoptBayesian'
+ExtremumSeeking = 'cernml.optimizers.extremum_seeking:ExtremumSeeking'
+
 [tool.setuptools_scm]
 
 [tool.black]
