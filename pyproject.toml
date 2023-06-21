@@ -1,0 +1,93 @@
+# SPDX-FileCopyrightText: 2023 GSI Helmholtzzentrum für Schwerionenforschung
+# SPDX-FileNotice: All rights not expressly granted are reserved.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later OR EUPL-1.2+
+
+[build-system]
+requires = [
+    'pip >= 22',
+    'setuptools >= 45',
+    'setuptools-scm[toml] ~= 7.0',
+    'wheel',
+]
+build-backend = 'setuptools.build_meta'
+
+[project]
+dynamic = ['version']
+name = 'cernml-coi-optimizers'
+authors = [
+    {name = 'Nico Madysa', email = 'nico.madysa@cern.ch'},
+]
+description = 'Uniform interfaces to single-objective optimization algorithms'
+readme = 'README.md'
+license = {file='COPYING'}
+dependencies = [
+    'cernml-coi ~=0.8.12',
+]
+classifiers = [
+    'Development Status :: 3 - Alpha',
+    'Environment :: Console',
+    'Intended Audience :: Science/Research',
+    'License :: Other/Proprietary License',
+    'Topic :: Scientific/Engineering :: Artificial Intelligence',
+    'Topic :: Scientific/Engineering :: Physics',
+    'Natural Language :: English',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3 :: Only',
+]
+
+[project.urls]
+gitlab = 'https://gitlab.cern.ch/geoff/cerml-coi-optimizers'
+
+[project.optional-dependencies]
+cernml-es = ['cernml-extremum-seeking ~= 2.0']
+bobyqa = ['Py-BOBYQA ~= 1.2']
+skopt = ['scikit-optimize ~= 0.9.0']
+all = ['cernml-coi-loops[cernml-es,bobyqa,skopt]']
+test = [
+    'cernml-coi-loops[all]',
+    'pytest',
+    'pytest-cov',
+]
+
+[tool.setuptools_scm]
+
+[tool.black]
+target-version = ['py39']
+
+[tool.isort]
+profile = 'black'
+known_first_party = ['cernml']
+
+[tool.pytest.ini_options]
+addopts = '--doctest-modules'
+testpaths = ['src', 'tests']
+
+[tool.pylint.format]
+ignore-long-lines = '<?https?://\S+>?$'
+
+[tool.pylint.'messages control']
+disable = [
+    'fixme',
+    'similarities',
+]
+
+[tool.mypy]
+disallow_untyped_defs = true
+explicit_package_bases = true
+mypy_path = '$MYPY_CONFIG_FILE_DIR/src'
+
+[[tool.mypy.overrides]]
+module = [
+    'numpy.*',
+    'pybobyqa.*',
+    'scipy.*',
+    'skopt.*',
+]
+ignore_missing_imports = true
