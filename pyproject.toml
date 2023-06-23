@@ -93,6 +93,7 @@ mypy_path = '$MYPY_CONFIG_FILE_DIR/src'
 
 [[tool.mypy.overrides]]
 module = [
+    'gym.*',
     'numpy.*',
     'pybobyqa.*',
     'scipy.*',

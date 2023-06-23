@@ -34,6 +34,16 @@ def entry_point(opt_class: t.Type[_reg.Optimizer]) -> metadata.EntryPoint:
     return res
 
 
+def test_optimizer_with_spec_cannot_be_instantiated() -> None:
+    class _BadSubclass(_reg.OptimizerWithSpec):
+        # pylint: disable = too-few-public-methods
+        def make_solve_func(self, bounds: t.Any, constraints: t.Any) -> t.Never:
+            raise NotImplementedError("mock")
+
+    with pytest.raises(TypeError, match="type checking only"):
+        _BadSubclass()
+
+
 def test_spec_from_entry_point(entry_point: metadata.EntryPoint) -> None:
     spec = _reg.OptimizerSpec(entry_point)
     assert spec.name == entry_point.name

@@ -3,7 +3,9 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later OR EUPL-1.2+
 
+# pylint: disable = import-outside-toplevel
 # pylint: disable = missing-function-docstring
+# pylint: disable = redefined-outer-name
 
 """Unit tests for the third-party wrappers."""
 
@@ -11,8 +13,23 @@ import typing as t
 
 import numpy as np
 import pytest
+from gym.spaces import Box
 
 from cernml import coi, optimizers
+
+
+@pytest.fixture
+def problem() -> coi.SingleOptimizable:
+    class _Problem(coi.SingleOptimizable):
+        optimization_space = Box(-1.0, 1.0, shape=(3,), dtype=float)
+
+        def get_initial_params(self) -> np.ndarray:
+            return np.array([0.1, 0.2, 0.0])
+
+        def compute_single_objective(self, params: np.ndarray) -> float:
+            return float(np.linalg.norm(params))
+
+    return _Problem()
 
 
 def test_names() -> None:
@@ -56,14 +73,41 @@ def configure_optimizer(optimizer: optimizers.Optimizer) -> optimizers.Optimizer
         "SkoptBayesian": 15,
     }.items(),
 )
-def test_run_optimizer(name: str, nfev: int) -> None:
-    def objective(params: np.ndarray[t.Any, np.dtype[np.floating]]) -> float:
-        return float(np.linalg.norm(params))
-
+def test_run_optimizer(problem: coi.SingleOptimizable, name: str, nfev: int) -> None:
     opt = configure_optimizer(optimizers.make(name))
-    bounds = optimizers.Bounds(-np.ones(3), np.ones(3))
-    solve = opt.make_solve_func(bounds=bounds, constraints=[])
-    x_init = np.array([0.1, 0.2, 0.0])
-    res = solve(objective, x_init)
+    space = problem.optimization_space
+    assert isinstance(space, Box)
+    solve = opt.make_solve_func(
+        optimizers.Bounds(space.low, space.high), problem.constraints
+    )
+    res = solve(problem.compute_single_objective, problem.get_initial_params())
     assert res.success
     assert res.nfev == nfev
+
+
+def test_bad_bobyqa_bounds(problem: coi.SingleOptimizable) -> None:
+    from cernml.optimizers.bobyqa import BobyqaException
+
+    opt = optimizers.make("BOBYQA")
+    space = problem.optimization_space
+    assert isinstance(space, Box)
+    solve = opt.make_solve_func(
+        optimizers.Bounds(space.low, space.high), problem.constraints
+    )
+    with pytest.raises(BobyqaException):
+        res = solve(problem.compute_single_objective, np.zeros(2))
+        raise RuntimeError(res.message)
+
+
+@pytest.mark.parametrize("field", ["gain", "oscillation_size", "decay_rate"])
+def test_extremum_seeking_zero_configs(field: str) -> None:
+    kwargs = {field: 0.0}
+    with pytest.raises(coi.BadConfig, match=field):
+        optimizers.make("ExtremumSeeking", **kwargs)
+
+
+def test_skopt_bad_num_calls() -> None:
+    with pytest.raises(
+        coi.BadConfig, match="n_initial_points must be less than maxfun"
+    ):
+        optimizers.make("SkoptBayesian", n_initial_points=10, n_calls=9)
