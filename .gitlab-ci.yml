@@ -1,13 +1,88 @@
-# You can override the included template(s) by including variable overrides
-# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
-# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
-# Note that environment variables can be set in several places
-# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
-stages:
-- test
-sast:
-  stage: test
+# SPDX-FileCopyrightText: 2020-2023 CERN
+# SPDX-FileCopyrightText: 2023 GSI Helmholtzzentrum für Schwerionenforschung
+# SPDX-FileNotice: All rights not expressly granted are reserved.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later OR EUPL-1.2+
+
 include:
-- template: Security/SAST.gitlab-ci.yml
+  - project: acc-co/devops/python/acc-py-gitlab-ci-templates
+    file: v2/python.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+
+variables:
+  PY_VERSION: "3.9"
+  ACC_PY_BASE_IMAGE_TAG: '2021.12'
+  project_package: cernml.optimizers
+  project_name: cernml-coi-optimizers
+
+# Build: Create a wheel to speed up installation.
+
+build_sdist:
+  extends: .acc_py_build_sdist
+
+build_wheel:
+  extends: .acc_py_build_wheel
+
+# Test: Run linters and unit tests. Run tests both in-tree and out-of-tree.
+
+test_pre-commit:
+  extends: .acc_py_pre-commit
+  before_script:
+    - !reference [.acc_py_pre-commit, before_script]
+    - python -m pip install pylint .[examples,test]
+
+test_dev:
+  extends:
+    - .acc_py_dev_test
+    - .acc_py_run_on_all_currently_supported
+  # Override `script` to change the precise pytest-cov arguments.
+  script:
+    - cd ${project_root}
+    - python -m pytest
+      --cov=./src
+      --cov-branch
+      --cov-report=term
+      --cov-report=html:coverage-html
+      --cov-report=xml:coverage-report.xml
+      --junitxml=junit-report.xml
+
+test_examples:
+  extends:
+    - .acc_py_run_on_manylinux_py_version
+    - .acc_py_run_on_all_currently_supported
+  before_script:
+    - !reference [.acc_py_run_on_manylinux_py_version, before_script]
+    - python -m pip install
+      -e ${project_root}[examples]
+  script:
+    - cd ${project_root}/examples
+    - python run_generic_optimizer.py -n15
+    - python implement_an_optimizer.py
+
+test_wheel:
+  extends:
+    - .acc_py_wheel_test
+    - .acc_py_run_on_all_currently_supported
+  # Override `script` to adjust the pytest arguments.
+  script:
+    - mkdir -p ~/not-the-source-dir && cd ~/not-the-source-dir
+    - python -m pytest --pyargs ${project_package} --doctest-modules
+
+# Deploy: Publish the wheel on acc-py-repo.cern.ch.
+
+publish:
+  extends: .acc_py_publish
+
+# Release: Show the code to the world.
+
+gitlab_release:
+  stage: deploy
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - echo "running release_job"
+  release:
+    tag_name: '$CI_COMMIT_TAG'
+    name: 'Release $CI_COMMIT_TAG'
+    description: '$CI_COMMIT_TAG'
