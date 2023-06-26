@@ -22,7 +22,9 @@ description = 'Uniform interfaces to single-objective optimization algorithms'
 readme = 'README.md'
 license = {file='COPYING'}
 dependencies = [
-    'cernml-coi ~=0.8.12',
+    'cernml-coi ~=0.8.13',
+    'importlib-metadata; python_version<"3.10"',
+    'typing-extensions; python_version<"3.11"',
 ]
 classifiers = [
     'Development Status :: 3 - Alpha',
@@ -46,12 +48,16 @@ classifiers = [
 gitlab = 'https://gitlab.cern.ch/geoff/cerml-coi-optimizers'
 
 [project.optional-dependencies]
-cernml-es = ['cernml-extremum-seeking ~= 2.0']
+cernml-es = ['cernml-extremum-seeking ~= 3.0']
 bobyqa = ['Py-BOBYQA ~= 1.2']
 skopt = ['scikit-optimize ~= 0.9.0']
 all = ['cernml-coi-loops[cernml-es,bobyqa,skopt]']
+examples = [
+    'cernml-coi-optimizers[all]',
+    'click ~= 8.0',
+]
 test = [
-    'cernml-coi-loops[all]',
+    'cernml-coi-optimizers[all]',
     'pytest',
     'pytest-cov',
 ]
