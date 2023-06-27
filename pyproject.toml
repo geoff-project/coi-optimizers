@@ -61,6 +61,11 @@ test = [
     'pytest',
     'pytest-cov',
 ]
+doc = [
+    'cernml-coi-utils[all]',
+    'sphinx',
+    'sphinx-inline-tabs',
+]
 
 [project.entry-points.'cernml.optimizers']
 BOBYQA = 'cernml.optimizers.bobyqa:Bobyqa'

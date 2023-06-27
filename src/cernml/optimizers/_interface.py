@@ -45,6 +45,8 @@ class Bounds(t.NamedTuple):
 class OptimizeResult:
     """A summary of the optimization procedure.
 
+    This is the return type of `SolveFunc`.
+
     Attributes:
         x: The solution of the optimization.
         fun: The objective function at x.

@@ -5,8 +5,10 @@ SPDX-FileNotice: All rights not expressly granted are reserved.
 SPDX-License-Identifier: GPL-3.0-or-later OR EUPL-1.2+
 -->
 
-# Changelog
+Changelog
+=========
 
-## Unreleased
+Unreleased
+----------
 
 - Initial release.

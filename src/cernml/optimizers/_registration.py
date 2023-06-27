@@ -246,9 +246,9 @@ def register(
     ``package.module.variable.nested``.
 
     If *dist* is passed, it's the
-    :class:`std:importlib.metadata.Distribution` that the entry point
+    :class:`importlib.metadata.Distribution` that the entry point
     belongs to. You usually get it by calling
-    :samp:`importlib.metadata.distribution({name in setup.py file})`.
+    :samp:`importlib.metadata.distribution("{name in setup.py file}")`.
 
     .. _entry point: https://setuptools.pypa.io/en/latest/userguide/entry_point.html
     """

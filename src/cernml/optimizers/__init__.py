@@ -11,9 +11,12 @@ multitude of single-objective optimization algorithms can be wrapped.
 It further provides wrappers for a number of third-party packages:
 
 - :doc:`SciPy <scipy:index>`,
-- :doc:`Scikit-Optimize <skopt:index>`,
+- :doc:`Scikit-Optimize <skopt:user_guide>`,
 - :doc:`Py-BOBYQA <bobyqa:index>`,
-- :doc:`CernML Extremum Seeking <cernml-es:index>`.
+- `CernML Extremum Seeking`_.
+
+.. _CernML Extremum Seeking:
+    https://gitlab.cern.ch/geoff/optimizers/cernml-extremum-seeking
 
 These wrappers can be used either directly, or through the dynamic
 *registration* feature provided by this package:
@@ -22,67 +25,84 @@ These wrappers can be used either directly, or through the dynamic
     >>> make("BOBYQA")
     <cernml.optimizers.bobyqa.Bobyqa object at ...>
 
-You can register your own optimizers either statically as `entry
-points`_ …:
+The recommended way to register your own optimizers is statically as
+`entry points`_. This guarantees that downstream applications will find
+them as long as their package is installed:
 
-.. code-block: toml
+.. tab:: pyproject.toml
 
-    # pyproject.toml
-    [project.entry-points."cernml.optimizers"]
-    MyOpt-v1 = "my_package.my_optimizer:MyOptimizer"
+    .. code-block:: toml
 
-.. code-block: ini
+        [project.entry-points."cernml.optimizers"]
+        MyOpt-v1 = "my_package.my_optimizer:MyOptimizer"
 
-    # setup.cfg
-    [options.entry_points]
-    cernml.optimizers =
-        MyOpt-v1 = my_package.my_optimizer:MyOptimizer
+.. tab:: setup.cfg
 
-.. code-block: python
+    .. code-block:: ini
 
-    # setup.py
-    ...
-    setup(
-        "my-distribution",
-        # ...,
-        entry_points={
-            "cernml.optimizers": [
-                "MyOpt-v1 = my_package.my_optimizer:MyOptimizer",
-            ],
-        },
-    )
+        [options.entry_points]
+        cernml.optimizers =
+            MyOpt-v1 = my_package.my_optimizer:MyOptimizer
 
-… or you can register them dynamically via the `register()` function:
+.. tab:: setup.py
 
-.. code-block: python
+    .. code-block:: python
 
-    # my_package/my_optimizer.py
-    from cernml.optimizers import Optimizer
+        setup(
+            "my-distribution",
+            # ...,
+            entry_points={
+                "cernml.optimizers": [
+                    "MyOpt-v1 = my_package.my_optimizer:MyOptimizer",
+                ],
+            },
+        )
 
-    class MyOptimizer(Optimizer):
-        ...
+Alternatively, you can also register your optimizers dynamically via
+`register()`. In this case, they only become available once the
+registering module has been imported:
 
-.. code-block: python
+.. tab:: string reference
 
-    # my_package/__init__.py
+    .. code-block:: python
 
-    from cernml.optimizers import register
+        # my_package/my_optimizer.py
+        from cernml.optimizers import Optimizer
 
-    register("MyOpt-v1", "my_package.my_optimizer:MyOptimizer")
+        class MyOptimizer(Optimizer):
+            ...
 
-You can also pass the optimizer class directly, if it is available:
+    .. code-block:: python
 
-.. code-block: python
+        # my_package/__init__.py
 
-    # my_package/__init__.py
-    from cernml.optimizers import register
+        from cernml.optimizers import register
 
-    from .my_optimizer import MyOptimizer
+        register("MyOpt-v1", "my_package.my_optimizer:MyOptimizer")
 
-    register("MyOpt-v1", MyOptimizer)
+.. tab:: class object
 
-Note that that the *entry point name* (in this case *MyOpt-v1*) should
-be unique among all installed packages.
+    .. code-block:: python
+
+        # my_package/my_optimizer.py
+        from cernml.optimizers import Optimizer, register
+
+        class MyOptimizer(Optimizer):
+            ...
+
+        register("MyOpt-v1", MyOptimizer)
+
+    .. code-block:: python
+
+        # my_package/__init__.py
+        from .my_optimizer import MyOptimizer
+
+If you pass a string reference, the optimizer module is only imported
+when the user calls `make()`. If you pass the optimizer class directly,
+it must be available at registration time.
+
+Note that in any case, the *entry point name* (in this example
+*MyOpt-v1*) should be unique among all installed packages.
 
 .. _entry points: https://setuptools.pypa.io/en/latest/userguide/entry_point.html
 """
@@ -101,6 +121,7 @@ from ._registration import (
     OptimizerNotFound,
     OptimizerSpec,
     OptimizerWithSpec,
+    TypeWarning,
     make,
     register,
     registry,
@@ -113,12 +134,13 @@ __all__ = [
     "Bounds",
     "DuplicateOptimizerWarning",
     "Objective",
-    "OptimizeResult",
     "Optimizer",
+    "OptimizeResult",
     "OptimizerNotFound",
     "OptimizerSpec",
     "OptimizerWithSpec",
     "SolveFunc",
+    "TypeWarning",
     "make",
     "register",
     "registry",
