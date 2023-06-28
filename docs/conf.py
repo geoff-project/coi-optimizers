@@ -26,6 +26,7 @@ import typing as t
 from importlib import import_module
 
 from docutils import nodes
+from sphinx import addnodes
 from sphinx.ext import intersphinx
 
 try:
@@ -178,54 +179,84 @@ def _is_true_prefix(prefix: str, full: str) -> bool:
 replace_modname("cernml.optimizers")
 
 
-def _fix_crossrefs(
-    app: Sphinx, env: BuildEnvironment, node: nodes.Inline, contnode: nodes.TextElement
+def adjust_pending_xref(
+    **kwargs: t.Any,
+) -> t.Callable[
+    [Sphinx, BuildEnvironment, addnodes.pending_xref, nodes.TextElement],
+    t.Optional[nodes.reference],
+]:
+    """Return a function that can fix a certain broken cross reference.
+
+    The returned function can be used as a ``missing-reference``
+    handler. It will take the ``pending_xref`` that failed to resolve
+    and will adjust its attributes as given by the arguments to this
+    function. It will then resolve it again using Intersphinx.
+    """
+
+    def _replace_text_node(node: nodes.reference, new: str) -> None:
+        [text] = node.findall(nodes.Text)
+        parent = text.parent
+        assert parent
+        parent.replace(text, nodes.Text(new))
+
+    def _inner(
+        app: Sphinx,
+        env: BuildEnvironment,
+        node: addnodes.pending_xref,
+        contnode: nodes.TextElement,
+    ) -> t.Optional[nodes.reference]:
+        node.update_all_atts(kwargs, replace=True)
+        res = intersphinx.missing_reference(app, env, node, contnode)
+        if res:
+            # `intersphinx.missing_reference()` may change the inner
+            # text. Replace it with the text that we want. (The text
+            # that we want is the original minus all leading module
+            # names.)
+            target = contnode.astext().rsplit(".")[-1]
+            _replace_text_node(res, target)
+        return res
+
+    return _inner
+
+
+crossref_fixers = {
+    # Neither stdlib nor `importlib_metadata` provide full API docs for
+    # EntryPoint and Distribution. Thus, we simply link to the
+    # corresponding user guide entries. Note that when resolving these
+    # references, Intersphinx *always* ignores the contnode and inserts
+    # its own text. Thus, we have to be very forceful when fixing it up.
+    "importlib.metadata.EntryPoint": adjust_pending_xref(
+        reftarget="std:entry-points", refdomain="std", reftype="ref"
+    ),
+    "importlib.metadata.Distribution": adjust_pending_xref(
+        reftarget="std:distributions", refdomain="std", reftype="ref"
+    ),
+    # Autodoc thinks this is a class, but it's not. (It *should* be
+    # data, but no, it's an attribute.)
+    "Constraint": adjust_pending_xref(
+        reftarget="cernml.coi.Constraint", reftype="attr"
+    ),
+    # Autodoc is very bad at resolving `typing` members, so we need to
+    # give it a push.
+    "t.Sequence": adjust_pending_xref(reftarget="typing.Sequence"),
+    "t.Optional": adjust_pending_xref(reftarget="typing.Optional", reftype="data"),
+    # Autodoc fails to resolves members of named tuples. Luckily, this
+    # concerns only one type.
+    "np.ndarray": adjust_pending_xref(reftarget="numpy.ndarray"),
+}
+
+
+def fix_all_crossrefs(
+    app: Sphinx,
+    env: BuildEnvironment,
+    node: addnodes.pending_xref,
+    contnode: nodes.TextElement,
 ) -> t.Optional[nodes.Element]:
-    # pylint: disable = too-many-return-statements
-    if node["reftarget"] == "importlib.metadata.EntryPoint":
-        node["reftarget"] = "std:entry-points"
-        node["reftype"] = "ref"
-        node["refdomain"] = "std"
-        res = intersphinx.missing_reference(app, env, node, contnode)
-        if res:
-            res.children = [contnode]
-        return res
-    if node["reftarget"] == "importlib.metadata.Distribution":
-        node["reftarget"] = "std:distributions"
-        node["reftype"] = "ref"
-        node["refdomain"] = "std"
-        res = intersphinx.missing_reference(app, env, node, contnode)
-        if res:
-            res.children = [contnode]
-        return res
-    # Autodoc fails to resolve `Constraint` in
-    # `Optimizer.make_solve_func()`.
-    if node["reftarget"] == "Constraint":
-        node["reftarget"] = "cernml.coi.Constraint"
-        node["reftype"] = "attr"
-        return intersphinx.missing_reference(app, env, node, contnode)
-    # Autodoc fails to resolve `t.Sequence` in
-    # `Optimizer.make_solve_func()`.
-    if node["reftarget"] == "t.Sequence":
-        node["reftarget"] = "typing.Sequence"
-        contnode = t.cast(nodes.TextElement, nodes.Text("Sequence"))
-        return intersphinx.missing_reference(app, env, node, contnode)
-    if node["reftarget"] == "t.Optional":
-        node["reftarget"] = "typing.Optional"
-        node["reftype"] = "data"
-        contnode.children = [nodes.Text("Optional")]
-        return intersphinx.missing_reference(app, env, node, contnode)
-    # Autodoc fails to resolve `np.ndarray` in `Bounds` and
-    # `OptimizeResult`.
-    if node["reftarget"].startswith("np."):
-        target = node["reftarget"].split(".", 1)[1]
-        node["reftarget"] = "numpy." + target
-        contnode = t.cast(nodes.TextElement, nodes.Text(target))
-        return intersphinx.missing_reference(app, env, node, contnode)
-    return None
+    """Handler for all missing references."""
+    fixer = crossref_fixers.get(node["reftarget"])
+    return fixer and fixer(app, env, node, contnode)
 
 
 def setup(app: Sphinx) -> None:
     """Set up hooks into Sphinx."""
-    app.connect("missing-reference", _fix_crossrefs)
-    # app.connect("autodoc-before-process-signature", _fix_decorator_return_value)
+    app.connect("missing-reference", fix_all_crossrefs)
