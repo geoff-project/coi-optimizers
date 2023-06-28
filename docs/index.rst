@@ -39,7 +39,8 @@ This repository can be found online on CERN's `Gitlab`_.
 .. _Scikit-Optimize: https://scikit-optimize.github.io/stable/modules/generated/skopt.gp_minimize.html
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
-   api/index
-   changelog
+    examples/index
+    api/index
+    changelog
