@@ -1,4 +1,3 @@
-# SPDX-FileCopyrightText: 2020-2023 CERN
 # SPDX-FileCopyrightText: 2023 GSI Helmholtzzentrum für Schwerionenforschung
 # SPDX-FileNotice: All rights not expressly granted are reserved.
 #
