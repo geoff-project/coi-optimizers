@@ -14,26 +14,34 @@ The Optimizer Interface
 
 .. class:: SolveFunc(obj: Objective, x0: np.ndarray) -> OptimizeResult
 
-    Type alias for the return type of
-    `~cernml.optimizers.Optimizer.make_solve_func()`.
+    :ref:`Type alias <type-aliases>`  for the return type of
+    `~Optimizer.make_solve_func()`.
+
+    This function is called to actually run the optimization procedure. It may
+    raise an exception when encountering any abnormal situations except
+    divergent behavior in the optimizer. Any exception raised by the
+    `~Objective` should be forwarded as well.
 
 .. class:: Objective(x: ~numpy.ndarray) -> float
 
-    Type alias for the objective function that a user should pass to the
+    :ref:`Type alias <type-aliases>` for the objective function passed to
     `~cernml.optimizers.SolveFunc`.
 
-    This is the function whose return value should be minimized by the
-    optimization algorithm. It should be defined on the whole domain given by
-    the `~cernml.optimizers.Bounds`.
+    This function takes an evaluation point *x* of the same shape as the
+    `Bounds` passed to `~Optimizer.make_solve_func()` and returns the
+    corresponding objective value. The goal of optimization is to find the *x*
+    that minimizes the objective.
 
 .. autoclass:: Bounds
 
 .. autoclass:: OptimizeResult
    :members:
 
-.. class:: AnyOptimizer
+.. data:: AnyOptimizer
+    :type: typing.TypeVar
 
-    A constrained type variable that allows to be generic over any `Optimizer`.
+    :ref:`Constrained type variable <std:typing-constrained-typevar>` that
+    allows to be generic over any `Optimizer`.
 
     If you use a type checker, it allows code like this to pass:
 
@@ -44,8 +52,16 @@ The Optimizer Interface
         class MyOptimizer(Optimizer):
             ...
 
+        # If the annotation were just `Optimizer`, we
+        # would lose the `MyOptimizer` after this call.
         def configure(opt: AnyOptimizer) -> AnyOptimizer:
             ...
             return opt
 
-        opt = configure(MyOptimizer())  # opt still has type `MyOptimizer!`
+        opt = configure(MyOptimizer())
+
+        # Type checker knows that `opt` is still a `MyOptimizer`.
+        def require_concrete(opt: MyOptimizer) -> None:
+            ...
+
+        require_concrete(opt)

@@ -85,9 +85,13 @@ default_role = "py:obj"
 # -- Options for Autodoc -----------------------------------------------
 
 autodoc_member_order = "bysource"
+autodoc_default_options = {
+    "show-inheritance": True,
+}
 
 napoleon_google_docstring = True
 napoleon_numpy_docstring = False
+napoleon_use_ivar = True
 
 # -- Options for Intersphinx -------------------------------------------
 
@@ -177,6 +181,7 @@ replace_modname("cernml.optimizers")
 def _fix_crossrefs(
     app: Sphinx, env: BuildEnvironment, node: nodes.Inline, contnode: nodes.TextElement
 ) -> t.Optional[nodes.Element]:
+    # pylint: disable = too-many-return-statements
     if node["reftarget"] == "importlib.metadata.EntryPoint":
         node["reftarget"] = "std:entry-points"
         node["reftype"] = "ref"
@@ -201,10 +206,14 @@ def _fix_crossrefs(
         return intersphinx.missing_reference(app, env, node, contnode)
     # Autodoc fails to resolve `t.Sequence` in
     # `Optimizer.make_solve_func()`.
-    if node["reftarget"].startswith("t."):
-        target = node["reftarget"].split(".", 1)[1]
-        node["reftarget"] = "typing." + target
-        contnode = t.cast(nodes.TextElement, nodes.Text(target))
+    if node["reftarget"] == "t.Sequence":
+        node["reftarget"] = "typing.Sequence"
+        contnode = t.cast(nodes.TextElement, nodes.Text("Sequence"))
+        return intersphinx.missing_reference(app, env, node, contnode)
+    if node["reftarget"] == "t.Optional":
+        node["reftarget"] = "typing.Optional"
+        node["reftype"] = "data"
+        contnode.children = [nodes.Text("Optional")]
         return intersphinx.missing_reference(app, env, node, contnode)
     # Autodoc fails to resolve `np.ndarray` in `Bounds` and
     # `OptimizeResult`.

@@ -42,15 +42,15 @@ class Bounds(t.NamedTuple):
 
 @dataclasses.dataclass
 class OptimizeResult:
-    """A summary of the optimization procedure.
+    """Summary of the optimization as returned by `SolveFunc`.
 
-    This is the return type of `SolveFunc`.
+    This is a :doc:`dataclass <std:library/dataclasses>`.
 
     Attributes:
         x: The solution of the optimization.
         fun: The objective function at x.
         success: If True, the optimizer exited successfully.
-        message: Description of the cause of the termination
+        message: Description of the cause of the termination.
         nit: The number of iterations performed by the optimizer.
         nfev: The number of evaluations of the objective function.
     """
@@ -77,20 +77,30 @@ AnyOptimizer = t.TypeVar("AnyOptimizer", bound="Optimizer")
 class Optimizer(abc.ABC):
     """The central definition of a single-objective optimizer.
 
-    An optimizer, for this package, is a builder_ for a *solve
-    function*. The solve function must have a well-defined interface: It
-    accepts an *objective function* and an *initial point x₀* and
-    return an `OptimizeResult`.
+    This :term:`abstract base class` follows the Builder_ pattern to
+    create a `solve function <cernml.optimizers.SolveFunc>`_. In the
+    simplest case, it is used as follows:
+
+    .. code-block:: python
+        :linenos:
+
+        class ConcreteOptimizer(Optimizer):
+            ...
+
+        def objective(x):
+            ...
+
+        opt = ConcreteOptimizer(...)
+        solve = opt.make_solve_func(bounds, constraints)
+        res = solve(objective, x0)
+        print("Minimum f(x*) = {res.fun} at x* = {res.x}")
 
     .. _builder: https://en.wikipedia.org/wiki/Builder_pattern
 
-    An objective function accepts a parameter *x* and returns the
-    objective value that shall be minimized by the solver.
-
-    The purpose of the optimizer is to contain all hyper parameters of
-    the optimization algorithm. When building the solve function, all of
-    these parameters should be bound to the actual function that
-    executes the algorithm.
+    The purpose of this class is to contain all hyper-parameters of the
+    optimization algorithm. When building the `solve function
+    <cernml.optimizers.SolveFunc>`_, these hyper-parameters should be
+    bound to the function that executes the algorithm.
 
     The optimizer should allow setting the hyper parameters:
 
@@ -98,62 +108,17 @@ class Optimizer(abc.ABC):
     2. as attributes on the optimizer instance;
     3. via the `cernml.coi.Configurable` API.
 
-    Example:
+    The :doc:`/examples/index` show how to
+    :doc:`/examples/implement_an_optimizer`.
 
-        >>> from cernml.coi import Config, Configurable, ConfigValues
-        >>> from gym.spaces import Box
-        >>> class RandomSearchOptimizer(Optimizer, Configurable):
-        ...     def __init__(self, maxfun: int = 100) -> None:
-        ...         self.maxfun = maxfun
-        ...     def get_config(self) -> Config:
-        ...         return Config().add(
-        ...             "maxfun", self.maxfun, range=(0, 1_000_000)
-        ...         )
-        ...     def apply_config(self, values: ConfigValues) -> None:
-        ...         self.maxfun = values.maxfun
-        ...     def make_solve_func(
-        ...         self,
-        ...         bounds: Bounds,
-        ...         constraints: t.Sequence[Constraint],
-        ...     ) -> SolveFunc:
-        ...         space = Box(bounds.lb, bounds.ub)
-        ...         def is_valid(x: np.ndarray) -> bool:
-        ...             return all(c(x) >= 0 for c in constraints)
-        ...         def solve_func(
-        ...             objective: Objective, x0: np.ndarray
-        ...         ) -> OptimizeResult:
-        ...             best_x = x0
-        ...             best_o = objective(x0)
-        ...             for _ in range(1, self.maxfun):
-        ...                 next_x = space.sample()
-        ...                 valid = is_valid(next_x)
-        ...                 next_o = objective(next_x)
-        ...                 if valid and not next_o >= best_o:
-        ...                     best_x, best_o = next_x, next_o
-        ...             return OptimizeResult(
-        ...                 x=best_x,
-        ...                 fun=best_o,
-        ...                 success=True,
-        ...                 message="",
-        ...                 nit=self.maxfun,
-        ...                 nfev=self.maxfun,
-        ...             )
-        ...         return solve_func
-        >>> from . import register, make
-        >>> register("RandomSearch", RandomSearchOptimizer)
-        >>> make("RandomSearch")
-        <...RandomSearchOptimizer object at ...>
+    Attributes:
+        spec: This optimizer's entry in the `registry` if it was created
+            via `make()`, otherwise `std:None`.
     """
 
     # pylint: disable = too-few-public-methods
 
     spec: t.Optional[OptimizerSpec] = None
-    """The optimizers `~cernml.optimizers.registry` entry.
-
-    If the optimizer was not created through
-    `~cernml.optimizers.make()`, but instead through e.g. direct
-    instantiation, this is `std:None`.
-    """
 
     @abc.abstractmethod
     def make_solve_func(
