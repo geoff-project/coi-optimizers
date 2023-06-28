@@ -37,7 +37,7 @@ def entry_point(opt_class: t.Type[_reg.Optimizer]) -> metadata.EntryPoint:
 def test_optimizer_with_spec_cannot_be_instantiated() -> None:
     class _BadSubclass(_reg.OptimizerWithSpec):
         # pylint: disable = too-few-public-methods
-        def make_solve_func(self, bounds: t.Any, constraints: t.Any) -> t.Never:
+        def make_solve_func(self, bounds: t.Any, constraints: t.Any) -> t.NoReturn:
             raise NotImplementedError("mock")
 
     with pytest.raises(TypeError, match="type checking only"):
