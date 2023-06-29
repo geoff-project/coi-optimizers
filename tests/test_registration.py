@@ -14,8 +14,7 @@ from unittest.mock import MagicMock, Mock, NonCallableMock, patch
 import pytest
 
 from cernml.optimizers import _registration as _reg
-
-metadata = _reg.metadata
+from cernml.optimizers._registration import metadata
 
 
 @pytest.fixture
