@@ -11,6 +11,7 @@ dist/
 *.egg-info/
 docs/html/
 .coverage
+.cache
 *.pyc
 
 # Vim-Gutentags temp files.

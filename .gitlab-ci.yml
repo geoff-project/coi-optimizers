@@ -27,9 +27,14 @@ build_wheel:
 
 test_pre-commit:
   extends: .acc_py_pre-commit
+  variables:
+    PRE_COMMIT_HOME: ${CI_PROJECT_DIR}/.cache/pre-commit
   before_script:
     - !reference [.acc_py_pre-commit, before_script]
     - python -m pip install pylint .[examples,test]
+  cache:
+    paths:
+      - ${PRE_COMMIT_HOME}
 
 test_dev:
   extends:
