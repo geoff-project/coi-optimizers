@@ -55,16 +55,6 @@ class OptimizerNotFound(KeyError):
 
 
 registry: t.Dict[str, OptimizerSpec] = {}
-"""The global registry of all optimizers.
-
-You should not modify this dict yourself. Call `register()` to
-dynamically add further optimizers.
-
-Example:
-
-    >>> # Get a list of the names all registered optimizers:
-    >>> list(registry.keys())
-"""
 
 
 class OptimizerWithSpec(Optimizer):
@@ -91,17 +81,18 @@ class OptimizerSpec:
     There are three ways to specify an optimizer:
 
     1. By calling `register()` with a subclass of `Optimizer`;
-    2. By calling `register()` with a string like ``"module:attr"``
-       that points to a subclass of `Optimizer`;
-    3. By defining an `entry point`_ in the group ``cernml.optimizers``
+    2. By calling `register()` with a string like
+       :samp:`"{module}:{attr}"` that points to a subclass of
+       `Optimizer`;
+    3. By defining an `entry point`_ in the group *cernml.optimizers*
        that points at a subclass of `Optimizer`.
 
     In case 1, the spec contains a reference to the subclass. You can
     get it by calling `load()`, which will not actually do any loading.
 
     In cases 2 and 3, calling `load()` will dynamically look up the
-    class by importing ``module`` and looking up ``attr`` in it. The
-    result is then cached in the spec and returned.
+    class by importing the given module and looking up the attr in it.
+    The result is then cached in the spec and returned.
 
     .. _entry point: https://setuptools.pypa.io/en/latest/userguide/entry_point.html
     """
@@ -154,8 +145,8 @@ class OptimizerSpec:
     def dist(self) -> t.Optional[metadata.Distribution]:
         """If available, the distribution_ providing the optimizer.
 
-        If no distribution is available (e.g. because the optimizer was
-        registered dynamically via `register()`), this property is None.
+        Typically, this is `None` if the optimizer was registered
+        dynamically via `register()`.
 
         .. _distribution: https://packaging.python.org/en/latest/glossary/#term-Distribution-Package
         """
@@ -222,11 +213,11 @@ def register(
     optimizer: t.Union[str, t.Type[Optimizer]],
     dist: t.Optional[metadata.Distribution] = None,
 ) -> None:
-    """Dynamically register a new optimizer class.
+    """Dynamically register a new `Optimizer`.
 
     .. note::
-        This function is deprecated. Consider defining an `entry point`_
-        in the group ``"cernml.optimizers"`` instead.
+        Consider defining an `entry point`_ in the group
+        *cernml.optimizers* instead.
 
     This is usually called directly after the definition of a new
     subclass of `Optimizer`. You can either pass the type object

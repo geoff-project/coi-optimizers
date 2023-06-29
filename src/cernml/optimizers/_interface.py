@@ -30,7 +30,7 @@ __all__ = [
 
 
 class Bounds(t.NamedTuple):
-    """Lower and upper search space bounds as a named tuple.
+    """Lower and upper search space bounds as a `~typing.NamedTuple`.
 
     The names has been chosen to be compatible with
     `scipy.optimize.Bounds`.
@@ -64,14 +64,11 @@ class OptimizeResult:
 
 
 Objective = t.Callable[[np.ndarray], float]
-"""Type alias for the objective function *x* -> *f*(*x*)."""
 
 SolveFunc = t.Callable[[Objective, np.ndarray], OptimizeResult]
-"""Type alias for the solve function."""
 
 
 AnyOptimizer = t.TypeVar("AnyOptimizer", bound="Optimizer")
-"""Constrained type variable of anything that implements `Optimizer`."""
 
 
 class Optimizer(abc.ABC):
@@ -106,7 +103,7 @@ class Optimizer(abc.ABC):
 
     1. as parameters to the initializer;
     2. as attributes on the optimizer instance;
-    3. via the `cernml.coi.Configurable` API.
+    3. via the `~cernml.coi.Configurable` API.
 
     The :doc:`/examples/index` show how to
     :doc:`/examples/implement_an_optimizer`.
