@@ -14,3 +14,4 @@ API Reference
 
    interface
    registration
+   third_party_wrappers

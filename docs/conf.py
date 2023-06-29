@@ -176,6 +176,7 @@ def _is_true_prefix(prefix: str, full: str) -> bool:
     return full.startswith(prefix) and full != prefix
 
 
+replace_modname("cernml.coi")
 replace_modname("cernml.optimizers")
 
 

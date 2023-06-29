@@ -1,0 +1,47 @@
+..
+    SPDX-FileCopyrightText: 2023 GSI Helmholtzzentrum für Schwerionenforschung
+    SPDX-FileNotice: All rights not expressly granted are reserved.
+
+    SPDX-License-Identifier: GPL-3.0-or-later OR EUPL-1.2+
+
+Wrappers for Third-Party Packages
+=================================
+
+SciPy
+-----
+
+.. automodule:: cernml.optimizers.scipy
+
+   .. currentmodule:: cernml.optimizers.scipy
+
+   .. autoclass:: Cobyla
+   .. autoclass:: NelderMeadSimplex
+   .. autoclass:: Powell
+
+Scikit-Optimize
+---------------
+
+.. automodule:: cernml.optimizers.skopt
+
+   .. currentmodule:: cernml.optimizers.skopt
+
+   .. autoclass:: SkoptBayesian
+
+Py-BOBYQA
+---------
+
+.. automodule:: cernml.optimizers.bobyqa
+
+   .. currentmodule:: cernml.optimizers.bobyqa
+
+   .. autoclass:: Bobyqa
+   .. autoexception:: BobyqaException
+
+CernML Extremum Seeking
+-----------------------
+
+.. automodule:: cernml.optimizers.extremum_seeking
+
+   .. currentmodule:: cernml.optimizers.extremum_seeking
+
+   .. autoclass:: ExtremumSeeking

@@ -26,7 +26,7 @@ class BobyqaException(Exception):
     """BOBYQA failed in an exceptional manner.
 
     Most importantly, this includes invalid parameter shapes and bounds.
-    It does not cover divergent behavior. :class:`OptimizeResult` is
+    It does not cover divergent behavior. :class:`.OptimizeResult` is
     used in this case.
     """
 
