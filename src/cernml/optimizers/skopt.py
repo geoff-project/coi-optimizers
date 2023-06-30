@@ -14,7 +14,7 @@ import skopt.optimizer
 
 from cernml import coi
 
-from ._interface import Bounds, Objective, Optimizer, OptimizeResult, SolveFunc
+from ._interface import Bounds, Objective, Optimizer, OptimizeResult, Solve
 
 __all__ = [
     "SkoptBayesian",
@@ -52,7 +52,7 @@ class SkoptBayesian(Optimizer, coi.Configurable):
 
     def make_solve_func(
         self, bounds: Bounds, constraints: t.Sequence[coi.Constraint]
-    ) -> SolveFunc:
+    ) -> Solve:
         callback = (
             (lambda res: res.fun < self.min_objective)
             if self.check_convergence

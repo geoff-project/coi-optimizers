@@ -17,7 +17,7 @@ from cernml.optimizers import (
     Objective,
     Optimizer,
     OptimizeResult,
-    SolveFunc,
+    Solve,
     make,
     register,
 )
@@ -79,13 +79,13 @@ class RandomSearchOptimizer(Optimizer, Configurable):
         self,
         bounds: Bounds,
         constraints: t.Sequence[Constraint],
-    ) -> SolveFunc:
+    ) -> Solve:
         space = Box(*bounds, dtype=np.common_type(*bounds))
 
         def is_valid(params: np.ndarray) -> bool:
             return all(c(params) >= 0 for c in constraints)
 
-        def solve_func(objective: Objective, initial: np.ndarray) -> OptimizeResult:
+        def solve(objective: Objective, initial: np.ndarray) -> OptimizeResult:
             best_x = initial
             best_o = objective(initial)
             for _ in range(1, self.maxfun):
@@ -103,7 +103,7 @@ class RandomSearchOptimizer(Optimizer, Configurable):
                 nfev=self.maxfun,
             )
 
-        return solve_func
+        return solve
 
 
 # Typically, you would not call `register()` directly, but instead

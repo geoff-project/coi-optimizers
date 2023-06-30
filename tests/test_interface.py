@@ -14,7 +14,7 @@ import typing as t
 import pytest
 
 from cernml.coi import Constraint
-from cernml.optimizers import Bounds, Optimizer, SolveFunc
+from cernml.optimizers import Bounds, Optimizer, Solve
 
 
 def test_abstract_method_raises() -> None:
@@ -22,7 +22,7 @@ def test_abstract_method_raises() -> None:
         # pylint: disable = useless-parent-delegation
         def make_solve_func(
             self, bounds: Bounds, constraints: t.Sequence[Constraint]
-        ) -> SolveFunc:
+        ) -> Solve:
             return super().make_solve_func(  # type: ignore[safe-super]
                 bounds, constraints
             )

@@ -22,7 +22,7 @@ from ._interface import (
     Objective,
     Optimizer,
     OptimizeResult,
-    SolveFunc,
+    Solve,
 )
 from ._registration import (
     EP_GROUP,
@@ -48,7 +48,7 @@ __all__ = [
     "OptimizerNotFound",
     "OptimizerSpec",
     "OptimizerWithSpec",
-    "SolveFunc",
+    "Solve",
     "TypeWarning",
     "make",
     "register",

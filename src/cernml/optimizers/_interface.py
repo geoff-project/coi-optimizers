@@ -32,13 +32,13 @@ __all__ = [
     "Objective",
     "OptimizeResult",
     "Optimizer",
-    "SolveFunc",
+    "Solve",
 ]
 
 
 @dataclasses.dataclass
 class OptimizeResult:
-    """Summary of the optimization as returned by `SolveFunc`.
+    """Summary of the optimization as returned by `Solve`.
 
     This is a :doc:`dataclass <std:library/dataclasses>`.
 
@@ -61,7 +61,7 @@ class OptimizeResult:
 
 Objective: TypeAlias = t.Callable[[np.ndarray], float]
 
-SolveFunc: TypeAlias = t.Callable[[Objective, np.ndarray], OptimizeResult]
+Solve: TypeAlias = t.Callable[[Objective, np.ndarray], OptimizeResult]
 
 Bounds: TypeAlias = t.Tuple[np.ndarray, np.ndarray]
 
@@ -72,7 +72,7 @@ class Optimizer(abc.ABC):
     """The central definition of a single-objective optimizer.
 
     This :term:`abstract base class` follows the Builder_ pattern to
-    create a `solve function <cernml.optimizers.SolveFunc>`_. In the
+    create a `solve function <cernml.optimizers.Solve>`_. In the
     simplest case, it is used as follows:
 
     .. code-block:: python
@@ -93,8 +93,8 @@ class Optimizer(abc.ABC):
 
     The purpose of this class is to contain all hyper-parameters of the
     optimization algorithm. When building the `solve function
-    <cernml.optimizers.SolveFunc>`_, these hyper-parameters should be
-    bound to the function that executes the algorithm.
+    <cernml.optimizers.Solve>`_, these hyper-parameters should be bound
+    to the function that executes the algorithm.
 
     The optimizer should allow setting the hyper parameters:
 
@@ -117,7 +117,7 @@ class Optimizer(abc.ABC):
     @abc.abstractmethod
     def make_solve_func(
         self, bounds: Bounds, constraints: t.Sequence[Constraint]
-    ) -> SolveFunc:
+    ) -> Solve:
         """Create a new solve function.
 
         Subclasses of `Optimizer` should override this method.

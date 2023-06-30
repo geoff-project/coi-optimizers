@@ -13,7 +13,7 @@ import numpy as np
 
 from cernml import coi, extremum_seeking
 
-from ._interface import Bounds, Objective, Optimizer, OptimizeResult, SolveFunc
+from ._interface import Bounds, Objective, Optimizer, OptimizeResult, Solve
 
 __all__ = [
     "ExtremumSeeking",
@@ -51,7 +51,7 @@ class ExtremumSeeking(Optimizer, coi.Configurable):
 
     def make_solve_func(
         self, bounds: Bounds, constraints: t.Sequence[coi.Constraint]
-    ) -> SolveFunc:
+    ) -> Solve:
         def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:
             res = extremum_seeking.optimize(
                 objective,

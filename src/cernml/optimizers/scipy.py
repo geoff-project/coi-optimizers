@@ -14,7 +14,7 @@ import scipy.optimize
 
 from cernml import coi
 
-from ._interface import Bounds, Objective, Optimizer, OptimizeResult, SolveFunc
+from ._interface import Bounds, Objective, Optimizer, OptimizeResult, Solve
 
 __all__ = [
     "Cobyla",
@@ -42,7 +42,7 @@ class Cobyla(Optimizer, coi.Configurable):
 
     def make_solve_func(
         self, bounds: Bounds, constraints: t.Sequence[coi.Constraint]
-    ) -> SolveFunc:
+    ) -> Solve:
         lower, upper = bounds
         constraints = list(constraints)
         constraints.append(
@@ -128,7 +128,7 @@ class NelderMeadSimplex(Optimizer, coi.Configurable):
         self,
         bounds: Bounds,
         constraints: t.Sequence[coi.Constraint],
-    ) -> SolveFunc:
+    ) -> Solve:
         def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:
             res = scipy.optimize.minimize(
                 objective,
@@ -240,7 +240,7 @@ class Powell(Optimizer, coi.Configurable):
         self,
         bounds: Bounds,
         constraints: t.Sequence[coi.Constraint],
-    ) -> SolveFunc:
+    ) -> Solve:
         def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:
             res = scipy.optimize.minimize(
                 objective,

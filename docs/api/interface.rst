@@ -12,7 +12,7 @@ The Optimizer Interface
 .. autoclass:: Optimizer
    :members:
 
-.. attribute:: SolveFunc
+.. attribute:: Solve
 
     :ref:`Type alias <type-aliases>`  for functions with signature
     (*obj*: `Objective`, *x0*: `~numpy.ndarray`) → `OptimizeResult`.
@@ -28,7 +28,7 @@ The Optimizer Interface
     :ref:`Type alias <type-aliases>` for functions with signature
     (*x*: `~numpy.ndarray`) → `float`.
 
-    This is the objective function that is passed to `SolveFunc`. It takes an
+    This is the objective function that is passed to `Solve`. It takes an
     evaluation point *x* of the same shape as the `Bounds` passed to
     `~Optimizer.make_solve_func()` and returns the corresponding objective
     value. The goal of optimization is to find the *x* that minimizes the

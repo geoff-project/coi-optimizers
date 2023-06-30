@@ -81,16 +81,15 @@ Then write a subclass of `Optimizer` and register it:
 ```python
 import typing as t
 
-import cernml.optimizers as opt
 import numpy as np
+from cernml.optimizers import Bounds, Objective, Optimizer, OptimizeResult, Solve
+from cernml.coi import Constraint
 
-class MyOptimizer(opt.Optimizer):
+class MyOptimizer(Optimizer):
     def make_solve_func(
-        self,
-        bounds: opt.Bounds,
-        constraints: t.Sequence[opt.Constraint],
-    ) -> opt.SolveFunc:
-        def solve(obj: opt.Objective, x0: np.ndarray) -> opt.OptimizeResult:
+        self, bounds: Bounds, constraints: t.Sequence[Constraint]
+    ) -> Solve:
+        def solve(obj: Objective, x0: np.ndarray) -> OptimizeResult:
             ...
 
         return solve
@@ -102,16 +101,17 @@ Any [*host application*][GeOFF] may then import your package and instantiate
 your optimizer to solve its optimization problem:
 
 ```python
+import numpy as np
 import my_project
-import cernml.optimizers as opt
+from cernml.optimizers import make
 
 def objective(x: np.ndarray) -> float:
     return np.sum(x**4 - x**2)
 
 x0 = np.array([0.0, 0.0])
 
-optimizer = opt.make("MyOptimizer-v1")
-solve = optimizer.make_solve_func(bounds=(x0 - 2.0, x0 + 2.0), constraints=[])
+opt = make("MyOptimizer-v1")
+solve = opt.make_solve_func(bounds=(x0 - 2.0, x0 + 2.0), constraints=[])
 results = solve(objective, x0)
 ```
 

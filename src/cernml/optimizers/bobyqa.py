@@ -14,7 +14,7 @@ import pybobyqa
 
 from cernml import coi
 
-from ._interface import Bounds, Objective, Optimizer, OptimizeResult, SolveFunc
+from ._interface import Bounds, Objective, Optimizer, OptimizeResult, Solve
 
 __all__ = [
     "Bobyqa",
@@ -38,8 +38,7 @@ class Bobyqa(Optimizer, coi.Configurable):
     guide`_.
 
     .. _Py-BOBYQA user guide:
-        https://numericalalgorithmsgroup.github.io/pybobyqa/build/html/userguide.html
-        #optional-arguments
+        https://numericalalgorithmsgroup.github.io/pybobyqa/build/html/userguide.html#optional-arguments
     """
 
     def __init__(
@@ -64,7 +63,7 @@ class Bobyqa(Optimizer, coi.Configurable):
 
     def make_solve_func(
         self, bounds: Bounds, constraints: t.Sequence[coi.Constraint]
-    ) -> SolveFunc:
+    ) -> Solve:
         # TODO: Warn if constraints are passed
         def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:
             nsamples = self.nsamples
