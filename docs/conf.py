@@ -104,6 +104,7 @@ def acc_py_docs_link(repo: str) -> str:
 
 intersphinx_mapping = {
     "coi": (acc_py_docs_link("geoff/cernml-coi"), None),
+    "ces": (acc_py_docs_link("geoff/optimizers/cernml-extremum-seeking"), None),
     "imp": ("https://importlib-metadata.readthedocs.io/en/latest/", None),
     "mpl": ("https://matplotlib.org/stable/", None),
     "np": ("https://numpy.org/doc/stable/", None),

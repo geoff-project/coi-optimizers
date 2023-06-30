@@ -21,7 +21,7 @@ __all__ = [
 
 
 class ExtremumSeeking(Optimizer, coi.Configurable):
-    """The Extremum Seeking algorithm provided by :mod:`cernml.extremum_seeking`."""
+    """Wrapper around an `~cernml.extremum_seeking.ExtremumSeeker`."""
 
     # pylint: disable = too-many-instance-attributes
 
