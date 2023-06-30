@@ -47,12 +47,89 @@ Table of Contents
 Motivation
 ----------
 
-TODO
+The [generic optimization framework & front-end][GeOFF] needs a way to start
+optimization algorithms that is independent of the specific algorithm's API. It
+also needs to configure them in a dynamic manner that cannot necessarily
+anticipate the exact parameters supported by each algorithm.
+
+This package helps solve this problem by providing a single interface that can
+wrap around almost any single-objective minimization algorithm. The registry
+system allows loading algorithms without hard-coding their location. The
+[CernML-COI][] provide an API to configure these algorithms dynamically at
+runtime.
 
 Quickstart
 ----------
 
-TODO
+To write an optimizer, create a new package using [`acc-py init`][] and add
+this package to the dependencies:
+
+```python
+REQUIREMENTS: dict = {
+    'core': [
+        'cernml-coi-optimizers ~= 1.0',
+        ...
+    ],
+    ...
+}
+```
+
+[`acc-py init`]: https://wikis.cern.ch/display/ACCPY/Getting+started+with+Acc-Py#GettingstartedwithAccPy-StartinganewPythonproject
+
+Then write a subclass of `Optimizer` and register it:
+
+```python
+import typing as t
+
+import cernml.optimizers as opt
+import numpy as np
+
+class MyOptimizer(opt.Optimizer):
+    def make_solve_func(
+        self,
+        bounds: opt.Bounds,
+        constraints: t.Sequence[opt.Constraint],
+    ) -> opt.SolveFunc:
+        def solve(obj: opt.Objective, x0: np.ndarray) -> opt.OptimizeResult:
+            ...
+
+        return solve
+
+register("MyOptimizer-v1", MyOptimizer)
+```
+
+Any [*host application*][GeOFF] may then import your package and instantiate
+your optimizer to solve its optimization problem:
+
+```python
+import my_project
+import cernml.optimizers as opt
+
+def objective(x: np.ndarray) -> float:
+    return np.sum(x**4 - x**2)
+
+x0 = np.array([0.0, 0.0])
+
+optimizer = opt.make("MyOptimizer-v1")
+solve = optimizer.make_solve_func(opt.Bounds(x0-2, x0+2), [])
+results = solve(objective, x0)
+```
+
+[GeOFF]: https://gitlab.cern.ch/geoff/geoff-app
+
+Documentation
+-------------
+
+Inside the CERN network, you can read the package documentation on the [Acc-Py
+documentation server][acc-py-docs]. The API is also documented via extensive
+Python docstrings.
+
+[acc-py-docs]: https://acc-py.web.cern.ch/gitlab/geoff/cernml-coi-optimizers/
+
+Changelog
+---------
+
+[See here](https://acc-py.web.cern.ch/gitlab/geoff/cernml-coi-optimizers/docs/stable/changelog.html).
 
 Stability
 ---------
@@ -65,16 +142,6 @@ will continue to work with version 0.6.1, but may break with version 0.7.0.
 
 The exception to this are the contents of `cernml.coi.unstable`, which may
 change in any given release.
-
-Changelog
----------
-
-TODO
-
-Documentation
--------------
-
-TODO
 
 License
 -------
