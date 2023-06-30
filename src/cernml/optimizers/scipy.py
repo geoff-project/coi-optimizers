@@ -8,13 +8,21 @@
 from __future__ import annotations
 
 import typing as t
+import warnings
 
 import numpy as np
 import scipy.optimize
 
 from cernml import coi
 
-from ._interface import Bounds, Objective, Optimizer, OptimizeResult, Solve
+from ._interface import (
+    Bounds,
+    IgnoredArgumentWarning,
+    Objective,
+    Optimizer,
+    OptimizeResult,
+    Solve,
+)
 
 __all__ = [
     "Cobyla",
@@ -129,6 +137,11 @@ class NelderMeadSimplex(Optimizer, coi.Configurable):
         bounds: Bounds,
         constraints: t.Sequence[coi.Constraint],
     ) -> Solve:
+        if constraints:
+            warnings.warn(
+                "NelderMeadSimplex ignores constraints", IgnoredArgumentWarning
+            )
+
         def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:
             res = scipy.optimize.minimize(
                 objective,
@@ -241,6 +254,9 @@ class Powell(Optimizer, coi.Configurable):
         bounds: Bounds,
         constraints: t.Sequence[coi.Constraint],
     ) -> Solve:
+        if constraints:
+            warnings.warn("Powell ignores constraints", IgnoredArgumentWarning)
+
         def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:
             res = scipy.optimize.minimize(
                 objective,

@@ -74,3 +74,5 @@ The Optimizer Interface
             ...
 
         require_concrete(opt)
+
+.. autoexception:: IgnoredArgumentWarning

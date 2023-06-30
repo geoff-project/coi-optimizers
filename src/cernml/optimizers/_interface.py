@@ -29,11 +29,61 @@ if t.TYPE_CHECKING:  # pragma: no cover
 __all__ = [
     "AnyOptimizer",
     "Bounds",
+    "IgnoredArgumentWarning",
     "Objective",
     "OptimizeResult",
     "Optimizer",
     "Solve",
 ]
+
+
+class IgnoredArgumentWarning(Warning):
+    """An optimization algorithm ignores one of the given arguments.
+
+    Most often, this affects either the `~cernml.coi.Constraint` list or
+    the `Bounds` passed to `~Optimizer.make_solve_func()`.
+
+    Example:
+
+        Given the following optimization problem:
+
+        >>> def objective(x):
+        ...     return np.linalg.norm(x)
+        >>> x0 = np.zeros(3)
+        >>> bounds = (x0 - 2.0, x0 + 2.0)
+
+        and the `BOBYQA <cernml.optimizers.bobyqa.Bobyqa>` optimization
+        algorithm:
+
+        >>> from cernml.optimizers import make
+        >>> opt = make("BOBYQA")
+
+        passing a constraint:
+
+        >>> from scipy.optimize import LinearConstraint
+        >>> c = LinearConstraint(np.diag(np.ones(3)), 1.0)
+
+        will raise this warning:
+
+        >>> import warnings
+        >>> warnings.simplefilter("error")
+        >>> solve = opt.make_solve_func(bounds, constraints=[c])
+        Traceback (most recent call last):
+        ...
+        IgnoredArgumentWarning: BOBYQA ignores constraints
+
+        `COBYLA <cernml.optimizers.scipy.Cobyla>`, on the other hand,
+        takes constraints into account.
+
+        >>> warnings.simplefilter("error")
+        >>> opt = make("COBYLA")
+        >>> solve = opt.make_solve_func(bounds, constraints=[c])
+        >>> res = solve(objective, x0)
+        >>> res.success
+        True
+        >>> res.x
+        array([1., 1., 1.])
+    """
 
 
 @dataclasses.dataclass

@@ -8,13 +8,21 @@
 from __future__ import annotations
 
 import typing as t
+import warnings
 
 import numpy as np
 import pybobyqa
 
 from cernml import coi
 
-from ._interface import Bounds, Objective, Optimizer, OptimizeResult, Solve
+from ._interface import (
+    Bounds,
+    IgnoredArgumentWarning,
+    Objective,
+    Optimizer,
+    OptimizeResult,
+    Solve,
+)
 
 __all__ = [
     "Bobyqa",
@@ -64,7 +72,9 @@ class Bobyqa(Optimizer, coi.Configurable):
     def make_solve_func(
         self, bounds: Bounds, constraints: t.Sequence[coi.Constraint]
     ) -> Solve:
-        # TODO: Warn if constraints are passed
+        if constraints:
+            warnings.warn("BOBYQA ignores constraints", IgnoredArgumentWarning)
+
         def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:
             nsamples = self.nsamples
             res = pybobyqa.solve(

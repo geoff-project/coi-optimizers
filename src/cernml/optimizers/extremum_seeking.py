@@ -8,12 +8,20 @@
 from __future__ import annotations
 
 import typing as t
+import warnings
 
 import numpy as np
 
 from cernml import coi, extremum_seeking
 
-from ._interface import Bounds, Objective, Optimizer, OptimizeResult, Solve
+from ._interface import (
+    Bounds,
+    IgnoredArgumentWarning,
+    Objective,
+    Optimizer,
+    OptimizeResult,
+    Solve,
+)
 
 __all__ = [
     "ExtremumSeeking",
@@ -52,6 +60,9 @@ class ExtremumSeeking(Optimizer, coi.Configurable):
     def make_solve_func(
         self, bounds: Bounds, constraints: t.Sequence[coi.Constraint]
     ) -> Solve:
+        if constraints:
+            warnings.warn("ExtremumSeeking ignores constraints", IgnoredArgumentWarning)
+
         def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:
             res = extremum_seeking.optimize(
                 objective,

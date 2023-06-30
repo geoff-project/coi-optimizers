@@ -19,6 +19,7 @@ A more concise introduction is given in the :doc:`/guide`.
 from ._interface import (
     AnyOptimizer,
     Bounds,
+    IgnoredArgumentWarning,
     Objective,
     Optimizer,
     OptimizeResult,
@@ -42,6 +43,7 @@ __all__ = [
     "AnyOptimizer",
     "Bounds",
     "DuplicateOptimizerWarning",
+    "IgnoredArgumentWarning",
     "Objective",
     "Optimizer",
     "OptimizeResult",
