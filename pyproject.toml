@@ -48,10 +48,11 @@ classifiers = [
 gitlab = 'https://gitlab.cern.ch/geoff/cerml-coi-optimizers'
 
 [project.optional-dependencies]
-cernml-es = ['cernml-extremum-seeking ~= 3.0']
 bobyqa = ['Py-BOBYQA ~= 1.2']
+cernml-es = ['cernml-extremum-seeking ~= 3.0']
+scipy = ['scipy ~= 1.0']
 skopt = ['scikit-optimize ~= 0.9.0']
-all = ['cernml-coi-loops[cernml-es,bobyqa,skopt]']
+all = ['cernml-coi-optimizers[bobyqa,cernml-es,scipy,skopt]']
 examples = [
     'cernml-coi-optimizers[all]',
     'click ~= 8.0',
@@ -62,7 +63,7 @@ test = [
     'pytest-cov',
 ]
 doc = [
-    'cernml-coi-utils[all]',
+    'cernml-coi-optimizers[all]',
     'sphinx',
     'sphinx-inline-tabs',
 ]
