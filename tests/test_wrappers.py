@@ -10,10 +10,12 @@
 """Unit tests for the third-party wrappers."""
 
 import typing as t
+import warnings
 
 import numpy as np
 import pytest
 from gym.spaces import Box
+from scipy.optimize import LinearConstraint
 
 from cernml import coi, optimizers
 
@@ -81,6 +83,22 @@ def test_run_optimizer(problem: coi.SingleOptimizable, name: str, nfev: int) -> 
     res = solve(problem.compute_single_objective, problem.get_initial_params())
     assert res.success
     assert res.nfev == nfev
+
+
+@pytest.mark.parametrize("name", list(optimizers.registry.keys()))
+def test_warn_ignored_constraints(name: str) -> None:
+    opt = optimizers.make(name)
+    bounds = (-np.ones(3), np.ones(3))
+    constraint = LinearConstraint(np.diag(np.ones(3)), -1.0, 1.0)
+    if name == "COBYLA":
+        # COBYLA knows constraints, so it should not raise a warning.
+        warnings.simplefilter("error")
+        opt.make_solve_func(bounds, [constraint])
+    else:
+        # None of the other optimizers know constraints, so they should
+        # raise a warning.
+        with pytest.warns(optimizers.IgnoredArgumentWarning):
+            opt.make_solve_func(bounds, [constraint])
 
 
 def test_bad_bobyqa_bounds(problem: coi.SingleOptimizable) -> None:
