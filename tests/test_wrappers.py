@@ -77,9 +77,7 @@ def test_run_optimizer(problem: coi.SingleOptimizable, name: str, nfev: int) -> 
     opt = configure_optimizer(optimizers.make(name))
     space = problem.optimization_space
     assert isinstance(space, Box)
-    solve = opt.make_solve_func(
-        optimizers.Bounds(space.low, space.high), problem.constraints
-    )
+    solve = opt.make_solve_func((space.low, space.high), problem.constraints)
     res = solve(problem.compute_single_objective, problem.get_initial_params())
     assert res.success
     assert res.nfev == nfev
@@ -91,9 +89,7 @@ def test_bad_bobyqa_bounds(problem: coi.SingleOptimizable) -> None:
     opt = optimizers.make("BOBYQA")
     space = problem.optimization_space
     assert isinstance(space, Box)
-    solve = opt.make_solve_func(
-        optimizers.Bounds(space.low, space.high), problem.constraints
-    )
+    solve = opt.make_solve_func((space.low, space.high), problem.constraints)
     with pytest.raises(BobyqaException):
         res = solve(problem.compute_single_objective, np.zeros(2))
         raise RuntimeError(res.message)

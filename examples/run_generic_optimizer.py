@@ -157,7 +157,7 @@ def main(
     if no_run:
         return
     env = ConvexToyProblem()
-    bounds = optimizers.Bounds(env.optimization_space.low, env.optimization_space.high)
+    bounds = (env.optimization_space.low, env.optimization_space.high)
     solve = opt.make_solve_func(bounds, constraints=[])
     res = solve(env.compute_single_objective, env.get_initial_params())
     show_opt_result(opt, res)

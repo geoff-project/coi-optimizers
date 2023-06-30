@@ -71,7 +71,7 @@ class Bobyqa(Optimizer, coi.Configurable):
             res = pybobyqa.solve(
                 objective,
                 x0=x_0,
-                bounds=(bounds.lb, bounds.ub),
+                bounds=bounds,
                 rhobeg=self.rhobeg,
                 rhoend=self.rhoend,
                 maxfun=self.maxfun,

@@ -111,7 +111,7 @@ def objective(x: np.ndarray) -> float:
 x0 = np.array([0.0, 0.0])
 
 optimizer = opt.make("MyOptimizer-v1")
-solve = optimizer.make_solve_func(opt.Bounds(x0-2, x0+2), [])
+solve = optimizer.make_solve_func(bounds=(x0 - 2.0, x0 + 2.0), constraints=[])
 results = solve(objective, x0)
 ```
 

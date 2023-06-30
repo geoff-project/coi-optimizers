@@ -58,7 +58,7 @@ class ExtremumSeeking(Optimizer, coi.Configurable):
                 x0=x_0,
                 max_calls=self.max_calls if self.max_calls else None,
                 cost_goal=self.cost_goal if self.check_goal else None,
-                bounds=(bounds.lb, bounds.ub),
+                bounds=bounds,
                 gain=self.gain,
                 oscillation_size=self.oscillation_size,
                 oscillation_sampling=self.oscillation_sampling,

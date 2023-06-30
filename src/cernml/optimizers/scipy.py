@@ -43,9 +43,10 @@ class Cobyla(Optimizer, coi.Configurable):
     def make_solve_func(
         self, bounds: Bounds, constraints: t.Sequence[coi.Constraint]
     ) -> SolveFunc:
+        lower, upper = bounds
         constraints = list(constraints)
         constraints.append(
-            scipy.optimize.NonlinearConstraint(lambda x: x, bounds.lb, bounds.ub)
+            scipy.optimize.NonlinearConstraint(lambda x: x, lower, upper)
         )
 
         def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:
@@ -125,7 +126,7 @@ class NelderMeadSimplex(Optimizer, coi.Configurable):
 
     def make_solve_func(
         self,
-        bounds: scipy.optimize.Bounds,
+        bounds: Bounds,
         constraints: t.Sequence[coi.Constraint],
     ) -> SolveFunc:
         def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:
@@ -237,7 +238,7 @@ class Powell(Optimizer, coi.Configurable):
 
     def make_solve_func(
         self,
-        bounds: scipy.optimize.Bounds,
+        bounds: Bounds,
         constraints: t.Sequence[coi.Constraint],
     ) -> SolveFunc:
         def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:

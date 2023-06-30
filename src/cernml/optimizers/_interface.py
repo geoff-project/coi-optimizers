@@ -14,6 +14,13 @@ import typing as t
 import numpy as np
 
 if t.TYPE_CHECKING:  # pragma: no cover
+    import sys
+
+    if sys.version_info < (3, 11):
+        from typing_extensions import TypeAlias
+    else:
+        from typing import TypeAlias
+
     # pylint: disable = unused-import, ungrouped-imports
     from cernml.coi import Constraint
 
@@ -27,17 +34,6 @@ __all__ = [
     "Optimizer",
     "SolveFunc",
 ]
-
-
-class Bounds(t.NamedTuple):
-    """Lower and upper search space bounds as a `~typing.NamedTuple`.
-
-    The names has been chosen to be compatible with
-    `scipy.optimize.Bounds`.
-    """
-
-    lb: np.ndarray
-    ub: np.ndarray
 
 
 @dataclasses.dataclass
@@ -63,10 +59,11 @@ class OptimizeResult:
     nfev: int
 
 
-Objective = t.Callable[[np.ndarray], float]
+Objective: TypeAlias = t.Callable[[np.ndarray], float]
 
-SolveFunc = t.Callable[[Objective, np.ndarray], OptimizeResult]
+SolveFunc: TypeAlias = t.Callable[[Objective, np.ndarray], OptimizeResult]
 
+Bounds: TypeAlias = t.Tuple[np.ndarray, np.ndarray]
 
 AnyOptimizer = t.TypeVar("AnyOptimizer", bound="Optimizer")
 

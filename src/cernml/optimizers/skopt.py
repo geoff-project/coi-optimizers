@@ -63,7 +63,7 @@ class SkoptBayesian(Optimizer, coi.Configurable):
             res = skopt.optimizer.gp_minimize(
                 objective,
                 x0=list(x_0),
-                dimensions=zip(bounds.lb, bounds.ub),
+                dimensions=zip(*bounds),
                 n_calls=self.n_calls,
                 n_initial_points=self.n_initial_points,
                 acq_func=self.acq_func,

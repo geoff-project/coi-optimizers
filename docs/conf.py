@@ -86,6 +86,7 @@ default_role = "py:obj"
 # -- Options for Autodoc -----------------------------------------------
 
 autodoc_member_order = "bysource"
+autodoc_typehints = "signature"
 autodoc_default_options = {
     "show-inheritance": True,
 }
@@ -181,6 +182,25 @@ replace_modname("cernml.coi")
 replace_modname("cernml.optimizers")
 
 
+def retry_internal_xref(
+    app: Sphinx,
+    env: BuildEnvironment,
+    node: addnodes.pending_xref,
+    contnode: nodes.TextElement,
+) -> t.Optional[nodes.reference]:
+    """Retry a failed Python reference with laxer requirements.
+
+    Autodoc often tries to look up type aliases as classes even though
+    they're classified as data. You can catch those cases and forward
+    them to `retry_internal_xref()`, which will look them up with the
+    more general `py:obj` role. This is more likely to find them.
+    """
+    domain = env.domains[node["refdomain"]]
+    return domain.resolve_xref(
+        env, node["refdoc"], app.builder, "obj", node["reftarget"], node, contnode
+    )
+
+
 def adjust_pending_xref(
     **kwargs: t.Any,
 ) -> t.Callable[
@@ -242,8 +262,8 @@ crossref_fixers = {
     # give it a push.
     "t.Sequence": adjust_pending_xref(reftarget="typing.Sequence"),
     "t.Optional": adjust_pending_xref(reftarget="typing.Optional", reftype="data"),
-    # Autodoc fails to resolves members of named tuples. Luckily, this
-    # concerns only one type.
+    # Autodoc fails to resolve type annotations on named tuples and data
+    # classes. Luckily, this concerns only one type.
     "np.ndarray": adjust_pending_xref(reftarget="numpy.ndarray"),
 }
 
@@ -256,7 +276,9 @@ def fix_all_crossrefs(
 ) -> t.Optional[nodes.Element]:
     """Handler for all missing references."""
     fixer = crossref_fixers.get(node["reftarget"])
-    return fixer and fixer(app, env, node, contnode)
+    if fixer:
+        return fixer(app, env, node, contnode)
+    return retry_internal_xref(app, env, node, contnode)
 
 
 def setup(app: Sphinx) -> None:

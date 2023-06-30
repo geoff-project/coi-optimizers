@@ -12,27 +12,36 @@ The Optimizer Interface
 .. autoclass:: Optimizer
    :members:
 
-.. class:: SolveFunc(obj: Objective, x0: np.ndarray) -> OptimizeResult
+.. attribute:: SolveFunc
 
-    :ref:`Type alias <type-aliases>`  for the return type of
-    `~Optimizer.make_solve_func()`.
+    :ref:`Type alias <type-aliases>`  for functions with signature
+    (*obj*: `Objective`, *x0*: `~numpy.ndarray`) → `OptimizeResult`.
 
-    This function is called to actually run the optimization procedure. It may
-    raise an exception when encountering any abnormal situations except
-    divergent behavior in the optimizer. Any exception raised by the
-    `~Objective` should be forwarded as well.
+    This is the function returned by `~Optimizer.make_solve_func()`. You have
+    to call it to actually run the optimization procedure. It may raise an
+    exception when encountering any abnormal situations except divergent
+    behavior in the optimizer. Any exception raised by the `~Objective` should
+    be forwarded as well.
 
-.. class:: Objective(x: ~numpy.ndarray) -> float
+.. attribute:: Objective
 
-    :ref:`Type alias <type-aliases>` for the objective function passed to
-    `~cernml.optimizers.SolveFunc`.
+    :ref:`Type alias <type-aliases>` for functions with signature
+    (*x*: `~numpy.ndarray`) → `float`.
 
-    This function takes an evaluation point *x* of the same shape as the
-    `Bounds` passed to `~Optimizer.make_solve_func()` and returns the
-    corresponding objective value. The goal of optimization is to find the *x*
-    that minimizes the objective.
+    This is the objective function that is passed to `SolveFunc`. It takes an
+    evaluation point *x* of the same shape as the `Bounds` passed to
+    `~Optimizer.make_solve_func()` and returns the corresponding objective
+    value. The goal of optimization is to find the *x* that minimizes the
+    objective.
 
-.. autoclass:: Bounds
+.. attribute:: Bounds
+
+    :ref:`Type alias <type-aliases>` of `~typing.Tuple`\ [`~numpy.ndarray`,
+    `~numpy.ndarray`].
+
+    This tuple describes the lower and upper search space bounds for those
+    optimization algorithms that use such bounds. Both arrays must have the
+    same shape.
 
 .. autoclass:: OptimizeResult
    :members:

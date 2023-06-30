@@ -79,9 +79,8 @@ To optimize an optimization problem like the following:
 
 you create a *solve function* and call it:
 
-    >>> from cernml.optimizers import Bounds
     >>> opt = make("BOBYQA")
-    >>> solve = opt.make_solve_func(Bounds(x0-2, x0+2), constraints=[])
+    >>> solve = opt.make_solve_func(bounds=(x0-2, x0+2), constraints=[])
     >>> result = solve(objective, x0)
 
 The resulting `OptimizeResult` contains various information about the
