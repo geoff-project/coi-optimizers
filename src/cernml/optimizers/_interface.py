@@ -40,7 +40,10 @@ __all__ = [
 class OptimizeResult:
     """Summary of the optimization as returned by `Solve`.
 
-    This is a :doc:`dataclass <std:library/dataclasses>`.
+    This class is modeled after `scipy.optimize.OptimizeResult`, but
+    lacks all attributes related to derivatives (Jacobians, Hessians).
+    Furthermore, it is a :doc:`dataclass <std:library/dataclasses>`
+    instead of a dict.
 
     Attributes:
         x: The solution of the optimization.
@@ -69,11 +72,13 @@ AnyOptimizer = t.TypeVar("AnyOptimizer", bound="Optimizer")
 
 
 class Optimizer(abc.ABC):
-    """The central definition of a single-objective optimizer.
+    """:term:`Abstract base class` for single-objective optimizers.
 
-    This :term:`abstract base class` follows the Builder_ pattern to
-    create a `solve function <cernml.optimizers.Solve>`_. In the
-    simplest case, it is used as follows:
+    This class follows the Builder_ pattern to create a `solve function
+    <cernml.optimizers.Solve>`_. The goal of the solve function is to
+    find the minimum of a given `objective function
+    <cernml.optimizers.Objective>`_. In the simplest case, it is used as
+    follows:
 
     .. code-block:: python
         :linenos:
@@ -91,12 +96,12 @@ class Optimizer(abc.ABC):
 
     .. _builder: https://en.wikipedia.org/wiki/Builder_pattern
 
-    The purpose of this class is to contain all hyper-parameters of the
-    optimization algorithm. When building the `solve function
-    <cernml.optimizers.Solve>`_, these hyper-parameters should be bound
-    to the function that executes the algorithm.
+    Subclasses should contain no logic other than containing and
+    validating all hyper-parameters of the optimization algorithm. When
+    calling `make_solve_func()`, it should bind the hyper-parameters to
+    the function that executes the algorithm.
 
-    The optimizer should allow setting the hyper parameters:
+    Subclasses should allow setting the hyper parameters in three ways:
 
     1. as parameters to the initializer;
     2. as attributes on the optimizer instance;
