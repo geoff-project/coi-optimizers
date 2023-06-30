@@ -61,7 +61,7 @@ class IgnoredArgumentWarning(Warning):
         passing a constraint:
 
         >>> from scipy.optimize import LinearConstraint
-        >>> c = LinearConstraint(np.diag(np.ones(3)), 1.0)
+        >>> c = LinearConstraint(np.diag(np.ones(3)), 1.0, np.inf)
 
         will raise this warning:
 
