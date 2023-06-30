@@ -127,3 +127,9 @@ gitlab_release:
     tag_name: '$CI_COMMIT_TAG'
     name: 'Release $CI_COMMIT_TAG'
     description: '$CI_COMMIT_TAG'
+    assets:
+      links:
+        - name: 'Documentation'
+          url: https://acc-py.web.cern.ch/gitlab/$CI_PROJECT_PATH/docs/$CI_COMMIT_TAG/
+        - name: 'Changelog'
+          url: https://acc-py.web.cern.ch/gitlab/$CI_PROJECT_PATH/docs/$CI_COMMIT_TAG/changelog.html
