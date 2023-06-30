@@ -30,7 +30,9 @@ The Registry API
     Example:
 
         >>> # Get a list of the names all registered optimizers:
+        >>> from cernml.optimizers import registry
         >>> list(registry.keys())
+        ['BOBYQA', 'COBYLA', ...]
 
 .. data:: EP_GROUP
    :type: str
@@ -38,7 +40,6 @@ The Registry API
 
    The name of the entry point group under which the registry searches for
    optimizers.
-
 
 .. autoclass:: OptimizerSpec
    :members: load, make, name, value, dist
