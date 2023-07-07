@@ -13,6 +13,11 @@ Unreleased
 
 No changes yet!
 
+v1.0.1
+------
+
+- Mark package as type-annotated according to :pep:`561`.
+
 v1.0.0
 ------
 
