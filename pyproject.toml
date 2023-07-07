@@ -31,17 +31,18 @@ classifiers = [
     'Environment :: Console',
     'Intended Audience :: Science/Research',
     'License :: Other/Proprietary License',
-    'Topic :: Scientific/Engineering :: Artificial Intelligence',
-    'Topic :: Scientific/Engineering :: Physics',
     'Natural Language :: English',
     'Operating System :: OS Independent',
+    'Programming Language :: Python :: 3 :: Only',
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
-    'Programming Language :: Python :: 3 :: Only',
+    'Topic :: Scientific/Engineering :: Artificial Intelligence',
+    'Topic :: Scientific/Engineering :: Physics',
+    'Typing :: Typed',
 ]
 
 [project.urls]
@@ -75,6 +76,10 @@ Powell = 'cernml.optimizers.scipy:Powell'
 NelderMeadSimplex = 'cernml.optimizers.scipy:NelderMeadSimplex'
 SkoptBayesian = 'cernml.optimizers.skopt:SkoptBayesian'
 ExtremumSeeking = 'cernml.optimizers.extremum_seeking:ExtremumSeeking'
+
+[tool.setuptools]
+zip-safe = true
+package-data = {'*' = ['py.typed']}
 
 [tool.setuptools_scm]
 
