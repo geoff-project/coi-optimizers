@@ -13,6 +13,11 @@ Changelog
 Unreleased
 ----------
 
+No changes yet!
+
+v1.0.2
+------
+
 - FIX: string representation of `OptimizerSpec`.
 - FIX: registration warnings point at an internal function instead of the line
   that calls `register()`.
