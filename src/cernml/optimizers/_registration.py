@@ -119,8 +119,8 @@ class OptimizerSpec:
 
     def __str__(self) -> str:
         name = f"{self.dist.name}/{self.name}" if self.dist else self.name
-        value = str(self._type) if self._type else self.value
-        return f"<{type(self).__name__}({name!r}, {value!r})>"
+        value = str(self._type) if self._type else repr(self.value)
+        return f"<{type(self).__name__}({name!r}, {value})>"
 
     @property
     def name(self) -> str:

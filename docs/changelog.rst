@@ -8,15 +8,17 @@ SPDX-License-Identifier: GPL-3.0-or-later OR EUPL-1.2+
 Changelog
 =========
 
+.. currentmodule:: cernml.optimizers
+
 Unreleased
 ----------
 
-No changes yet!
+- FIX: string representation of `OptimizerSpec`.
 
 v1.0.1
 ------
 
-- Mark package as type-annotated according to :pep:`561`.
+- FIX: Mark package as type-annotated according to :pep:`561`.
 
 v1.0.0
 ------

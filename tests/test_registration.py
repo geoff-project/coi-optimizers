@@ -72,9 +72,9 @@ def test_spec_from_optimizer_with_dist() -> None:
     "do_dist, do_load, string",
     [
         (False, False, "<OptimizerSpec('name', 'package:Class')>"),
-        (False, True, "<OptimizerSpec('name', \"<class 'abc.MockOptimizer'>\")>"),
+        (False, True, "<OptimizerSpec('name', <class 'abc.MockOptimizer'>)>"),
         (True, False, "<OptimizerSpec('dist/name', 'package:Class')>"),
-        (True, True, "<OptimizerSpec('dist/name', \"<class 'abc.MockOptimizer'>\")>"),
+        (True, True, "<OptimizerSpec('dist/name', <class 'abc.MockOptimizer'>)>"),
     ],
 )
 def test_spec_str(
