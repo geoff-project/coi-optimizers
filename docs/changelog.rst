@@ -14,6 +14,8 @@ Unreleased
 ----------
 
 - FIX: string representation of `OptimizerSpec`.
+- FIX: registration warnings point at an internal function instead of the line
+  that calls `register()`.
 
 v1.0.1
 ------

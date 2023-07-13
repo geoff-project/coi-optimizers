@@ -263,15 +263,18 @@ def register(
 
 def _warn_if_not_optimizer(opt: t.Type[Optimizer]) -> None:
     if not isinstance(opt, type):
-        warnings.warn(f"not a type: {opt!r}", TypeWarning)
+        warnings.warn(f"not a type: {opt!r}", TypeWarning, stacklevel=3)
     elif not issubclass(opt, Optimizer):
-        warnings.warn(f"not a subclass of Optimizer: {opt!r}", TypeWarning)
+        warnings.warn(
+            f"not a subclass of Optimizer: {opt!r}", TypeWarning, stacklevel=3
+        )
 
 
 def _warn_duplicate(prev: OptimizerSpec, new: OptimizerSpec) -> None:
     warnings.warn(
         f"overriding {prev!s} with {new!s} for name {new.name!r}",
         DuplicateOptimizerWarning,
+        stacklevel=3,
     )
 
 
