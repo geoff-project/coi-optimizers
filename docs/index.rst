@@ -26,7 +26,19 @@ third-party packages:
 - :doc:`CernML Extremum Seeking <ces:index>`,
 
 The optimizers are suitable to be hooked into the pre-implemented optimization
-loop defined in CernML-COI-Loops_.
+loop defined in CernML-COI-Loops_. However, you can also run their optimization
+loops directly:
+
+.. code-block:: python
+
+    # Run `pip install cern_awake_env` for this particular example.
+    import cern_awake_env
+    from cernml import coi, optimizers
+
+    env = coi.make("AwakeSimEnvH-v1")
+    opt = optimizers.make("BOBYQA")
+
+    result = optimizers.solve(opt, env)
 
 This repository can be found online on CERN's Gitlab_.
 

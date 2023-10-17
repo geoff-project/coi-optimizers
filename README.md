@@ -58,8 +58,38 @@ system allows loading algorithms without hard-coding their location. The
 [CernML-COI][] provide an API to configure these algorithms dynamically at
 runtime.
 
-Quickstart
-----------
+Quickstart: Using an Optimizer
+------------------------------
+
+If you have a package created with [`acc-py init`][], add this package to your
+dependencies and use the extra `all` to include all third-party wrappers:
+
+```python
+REQUIREMENTS: dict = {
+    'core': [
+        'cernml-coi-optimizers[all] ~= 1.0',
+        ...
+    ],
+    ...
+}
+```
+
+Use the registry APIs of the [COI][CernML-COI] and of this package to create
+optimizer and optimization problem:
+
+```python
+# Run `pip install cern_awake_env` for this particular example.
+import cern_awake_env
+from cernml import coi, optimizers
+
+env = coi.make("AwakeSimEnvH-v1")
+opt = optimizers.make("BOBYQA")
+
+result = optimizers.solve(opt, env)
+```
+
+Quickstart: Providing an Optimizer
+----------------------------------
 
 To write an optimizer, create a new package using [`acc-py init`][] and add
 this package to the dependencies:
