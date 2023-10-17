@@ -13,6 +13,11 @@ Changelog
 Unreleased
 ----------
 
+No changes yet!
+
+v1.1.0
+------
+
 - ADD: Convenience functions `~cernml.optimizers.make_solve_func()` and
   `~cernml.optimizers.solve()`.
 - FIX: Various small documentation improvements.
