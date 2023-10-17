@@ -3,9 +3,6 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later OR EUPL-1.2+
 
-# pylint: disable = missing-function-docstring
-# pylint: disable = redefined-outer-name
-
 """Unit tests for the third-party wrappers."""
 
 import typing as t

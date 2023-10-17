@@ -3,10 +3,6 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later OR EUPL-1.2+
 
-# pylint: disable = missing-class-docstring
-# pylint: disable = missing-function-docstring
-# pylint: disable = too-few-public-methods
-
 """Unit tests for the abstract base class."""
 
 import typing as t

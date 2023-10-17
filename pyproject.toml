@@ -107,6 +107,9 @@ exclude_also = [
     'raise NotImplementedError',
 ]
 
+[tool.pylint.main]
+ignore-patterns = ['.*\.pyi$', 'test_.*\.py$']
+
 [tool.pylint.format]
 ignore-long-lines = '<?https?://\S+>?$'
 
