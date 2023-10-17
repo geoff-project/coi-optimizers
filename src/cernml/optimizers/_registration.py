@@ -14,17 +14,17 @@ import warnings
 from ._interface import Optimizer
 
 if t.TYPE_CHECKING:
-    import typing_extensions as tx  # pragma: no cover
+    import typing_extensions as tx
 
 if sys.version_info < (3, 10):
-    import importlib_metadata as metadata  # pragma: no cover
+    import importlib_metadata as metadata
 else:
-    from importlib import metadata  # pragma: no cover
+    from importlib import metadata
 
 if sys.version_info < (3, 11):
-    from typing_extensions import Self  # pragma: no cover
+    from typing_extensions import Self
 else:
-    from typing import Self  # pragma: no cover
+    from typing import Self
 
 __all__ = [
     "EP_GROUP",

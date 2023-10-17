@@ -13,7 +13,7 @@ import typing as t
 
 import numpy as np
 
-if t.TYPE_CHECKING:  # pragma: no cover
+if t.TYPE_CHECKING:
     import sys
 
     if sys.version_info < (3, 11):

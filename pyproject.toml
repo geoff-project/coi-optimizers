@@ -94,6 +94,19 @@ addopts = '--doctest-modules --doctest-glob="*.rst" --ignore=docs/conf.py'
 testpaths = ['src', 'tests', 'docs']
 doctest_optionflags = ['ELLIPSIS', 'IGNORE_EXCEPTION_DETAIL']
 
+[tool.coverage.run]
+source = ['src/']
+branch = true
+
+[tool.coverage.report]
+exclude_also = [
+    '^\s*from .* import',
+    '^\s*import ',
+    'if \w*\.TYPE_CHECKING',
+    '^\s*\.\.\.$',
+    'raise NotImplementedError',
+]
+
 [tool.pylint.format]
 ignore-long-lines = '<?https?://\S+>?$'
 
