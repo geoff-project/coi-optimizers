@@ -5,7 +5,7 @@ SPDX-FileNotice: All rights not expressly granted are reserved.
 SPDX-License-Identifier: GPL-3.0-or-later OR EUPL-1.2+
 -->
 
-Optimization Loops for the Common Optimization Interfaces
+Optimizer Wrappers for the Common Optimization Interfaces
 =========================================================
 
 CernML is the project of bringing numerical optimization, machine learning and
