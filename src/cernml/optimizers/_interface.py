@@ -124,11 +124,10 @@ AnyOptimizer = t.TypeVar("AnyOptimizer", bound="Optimizer")
 class Optimizer(abc.ABC):
     """:term:`Abstract base class` for single-objective optimizers.
 
-    This class follows the Builder_ pattern to create a `solve function
-    <cernml.optimizers.Solve>`_. The goal of the solve function is to
-    find the minimum of a given `objective function
-    <cernml.optimizers.Objective>`_. In the simplest case, it is used as
-    follows:
+    This class follows the Builder_ pattern to create a `Solve`
+    function. The goal of the solve function is to find the minimum of
+    a given `Objective` function. In the simplest case, you use it via
+    `make()` and `solve()` as follows:
 
     .. code-block:: python
         :linenos:
@@ -136,12 +135,12 @@ class Optimizer(abc.ABC):
         class ConcreteOptimizer(Optimizer):
             ...
 
-        def objective(x):
+        def MyEnv(coi.SingleOptimizable):
             ...
 
         opt = ConcreteOptimizer(...)
-        solve = opt.make_solve_func(bounds, constraints)
-        res = solve(objective, x0)
+        env = MyEnv()
+        res = solve(opt, env)
         print("Minimum f(x*) = {res.fun} at x* = {res.x}")
 
     .. _builder: https://en.wikipedia.org/wiki/Builder_pattern
@@ -175,7 +174,9 @@ class Optimizer(abc.ABC):
     ) -> Solve:
         """Create a new solve function.
 
-        Subclasses of `Optimizer` should override this method.
+        Subclasses of `Optimizer` should override this method. Users can
+        call this method directly, or use the convenience wrapper
+        `~cernml.optimizers.make_solve_func()`.
 
         Args:
             bounds: A named tuple of the lower and upper bound of the

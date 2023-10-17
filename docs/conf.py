@@ -90,6 +90,11 @@ autodoc_typehints = "signature"
 autodoc_default_options = {
     "show-inheritance": True,
 }
+autodoc_type_aliases = {
+    "Bounds": "cernml.optimizers.Bounds",
+    "Objective": "cernml.optimizers.Objective",
+    "Solve": "~cernml.optimizers.Solve",
+}
 
 napoleon_google_docstring = True
 napoleon_numpy_docstring = False

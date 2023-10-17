@@ -37,23 +37,26 @@ from ._registration import (
     registry,
     spec,
 )
+from ._solvefunc import make_solve_func, solve
 
 __all__ = [
-    "EP_GROUP",
     "AnyOptimizer",
     "Bounds",
     "DuplicateOptimizerWarning",
+    "EP_GROUP",
     "IgnoredArgumentWarning",
     "Objective",
-    "Optimizer",
     "OptimizeResult",
+    "Optimizer",
     "OptimizerNotFound",
     "OptimizerSpec",
     "OptimizerWithSpec",
     "Solve",
     "TypeWarning",
     "make",
+    "make_solve_func",
     "register",
     "registry",
+    "solve",
     "spec",
 ]

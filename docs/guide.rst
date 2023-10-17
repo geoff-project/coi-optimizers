@@ -94,6 +94,36 @@ optimization procedure:
     >>> round(result.fun, 3)
     -0.5
 
+Integration with the COI
+------------------------
+
+This package depends on and integrates with the :doc:`Common Optimization
+Interfaces <coi:index>`.
+If you have an object that subclasses `~cernml.coi.SingleOptimizable` or
+`~cernml.coi.FunctionOptimizable` …
+
+    >>> from cernml.coi import SingleOptimizable
+    >>> from gym.spaces import Box
+    ...
+    >>> class ExampleProblem(SingleOptimizable):
+    ...     optimization_space = Box(x0-2, x0+2)
+    ...     def get_initial_params(self):
+    ...         return x0
+    ...     def compute_single_objective(self, params):
+    ...         return objective(params)
+
+… you can use the convenience functions
+`cernml.optimizers.make_solve_func()` and `cernml.optimizers.solve()` and they
+will extract the necessary information automatically:
+
+    >>> # This overwrites the previous `solve`.
+    ... from cernml.optimizers import solve
+    ...
+    >>> problem = ExampleProblem()
+    >>> result = solve(opt, problem)
+    >>> round(result.fun, 3)
+    -0.5
+
 Configuring an Optimizer
 ------------------------
 

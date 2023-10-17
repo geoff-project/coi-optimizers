@@ -12,7 +12,12 @@ The Optimizer Interface
 .. autoclass:: Optimizer
    :members:
 
+.. autofunction:: solve
+
+.. autofunction:: make_solve_func
+
 .. attribute:: Solve
+    :type: typing.TypeAlias
 
     :ref:`Type alias <type-aliases>`  for functions with signature
     (*obj*: `Objective`, *x0*: `~numpy.ndarray`) → `OptimizeResult`.
@@ -24,6 +29,7 @@ The Optimizer Interface
     be forwarded as well.
 
 .. attribute:: Objective
+    :type: typing.TypeAlias
 
     :ref:`Type alias <type-aliases>` for functions with signature
     (*x*: `~numpy.ndarray`) → `float`.
@@ -35,6 +41,7 @@ The Optimizer Interface
     objective.
 
 .. attribute:: Bounds
+    :type: typing.TypeAlias
 
     :ref:`Type alias <type-aliases>` of `~typing.Tuple`\ [`~numpy.ndarray`,
     `~numpy.ndarray`].
