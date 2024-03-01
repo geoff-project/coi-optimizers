@@ -10,10 +10,20 @@ include:
   - template: Security/SAST.gitlab-ci.yml
 
 variables:
-  PY_VERSION: "3.9"
-  ACC_PY_BASE_IMAGE_TAG: '2021.12'
+  PY_VERSION: "3.11"
+  ACC_PY_BASE_IMAGE_TAG: '2023.06'
   project_package: cernml.optimizers
   project_name: cernml-coi-optimizers
+
+.coi_run_on_all_currently_supported:
+  # Copied from `.acc_py_run_on_all_currently_supported`, but only using the
+  # Python versions that we support.
+  parallel:
+    matrix:
+      - ACC_PY_BASE_IMAGE_TAG: "2021.12"
+        PY_VERSION: "3.9"
+      - ACC_PY_BASE_IMAGE_TAG: "2023.06"
+        PY_VERSION: "3.11"
 
 # Build: Create a wheel to speed up installation.
 
@@ -39,7 +49,7 @@ test_pre-commit:
 test_dev:
   extends:
     - .acc_py_dev_test
-    - .acc_py_run_on_all_currently_supported
+    - .coi_run_on_all_currently_supported
   # Override `script` to change the precise pytest-cov arguments.
   script:
     - cd ${project_root}
@@ -54,7 +64,7 @@ test_dev:
 test_examples:
   extends:
     - .acc_py_run_on_manylinux_py_version
-    - .acc_py_run_on_all_currently_supported
+    - .coi_run_on_all_currently_supported
   before_script:
     - !reference [.acc_py_run_on_manylinux_py_version, before_script]
     - python -m pip install
@@ -67,7 +77,7 @@ test_examples:
 test_wheel:
   extends:
     - .acc_py_wheel_test
-    - .acc_py_run_on_all_currently_supported
+    - .coi_run_on_all_currently_supported
   # Override `script` to adjust the pytest arguments.
   script:
     - mkdir -p ~/not-the-source-dir && cd ~/not-the-source-dir
