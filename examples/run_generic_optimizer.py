@@ -11,7 +11,7 @@ import warnings
 
 import click
 import numpy as np
-from gym.spaces import Box
+from gymnasium.spaces import Box
 
 from cernml import coi, optimizers
 
@@ -24,7 +24,7 @@ class ConvexToyProblem(coi.SingleOptimizable):
     $(x, y, z) = (0.1, 0.2, 0.0)$.
     """
 
-    optimization_space = Box(-1.0, 1.0, shape=(3,), dtype=float)
+    optimization_space = Box(-1.0, 1.0, shape=[3], dtype=np.double)
 
     def get_initial_params(self) -> np.ndarray:
         return np.array([0.1, 0.2, 0.0])

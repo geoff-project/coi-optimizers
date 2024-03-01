@@ -23,6 +23,7 @@ readme = 'README.md'
 license = {file='COPYING'}
 dependencies = [
     'cernml-coi ~=0.8.13',
+    'gymnasium < 2',
     'importlib-metadata; python_version<"3.10"',
     'typing-extensions; python_version<"3.11"',
 ]
@@ -59,6 +60,7 @@ examples = [
 ]
 test = [
     'cernml-coi-optimizers[all]',
+    'gym',
     'pytest',
     'pytest-cov',
 ]
@@ -127,7 +129,6 @@ mypy_path = '$MYPY_CONFIG_FILE_DIR/src'
 
 [[tool.mypy.overrides]]
 module = [
-    'gym.*',
     'numpy.*',
     'pybobyqa.*',
     'scipy.*',

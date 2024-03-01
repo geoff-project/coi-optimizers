@@ -9,6 +9,7 @@ import typing as t
 from unittest import mock
 
 import pytest
+from gymnasium.spaces import Box
 
 from cernml.coi import Constraint, FunctionOptimizable, SingleOptimizable
 from cernml.optimizers import Bounds, Objective, Optimizer, Solve, solve
@@ -35,7 +36,9 @@ def test_solve_single_optimizable(monkeypatch: pytest.MonkeyPatch) -> None:
         return mock.DEFAULT
 
     flatten_space = mock.Mock(name="flatten-space")
-    monkeypatch.setattr("cernml.optimizers._solvefunc.flatten_space", flatten_space)
+    flattened = flatten_space.return_value
+    flattened.mock_add_spec(Box(-1, 1, [1]))
+    monkeypatch.setattr("gymnasium.spaces.flatten_space", flatten_space)
     problem = mock.Mock(SingleOptimizable)
     optimizer = mock.Mock(Optimizer)
     solvefunc = optimizer.make_solve_func.return_value
@@ -44,7 +47,6 @@ def test_solve_single_optimizable(monkeypatch: pytest.MonkeyPatch) -> None:
     result = solve(optimizer, problem)
     # Then:
     flatten_space.assert_called_once_with(problem.optimization_space)
-    flattened = flatten_space.return_value
     optimizer.make_solve_func.assert_called_once_with(
         (flattened.low, flattened.high), problem.constraints
     )
@@ -62,7 +64,9 @@ def test_solve_function_optimizable(monkeypatch: pytest.MonkeyPatch) -> None:
         return mock.DEFAULT
 
     flatten_space = mock.Mock(name="flatten-space")
-    monkeypatch.setattr("cernml.optimizers._solvefunc.flatten_space", flatten_space)
+    flattened = flatten_space.return_value
+    flattened.mock_add_spec(Box(-1, 1, [1]))
+    monkeypatch.setattr("gymnasium.spaces.flatten_space", flatten_space)
     problem = mock.Mock(FunctionOptimizable)
     optimizer = mock.Mock(Optimizer)
     solvefunc = optimizer.make_solve_func.return_value
@@ -74,7 +78,6 @@ def test_solve_function_optimizable(monkeypatch: pytest.MonkeyPatch) -> None:
     problem.get_optimization_space.assert_called_once_with(cycle_time)
     space = problem.get_optimization_space.return_value
     flatten_space.assert_called_once_with(space)
-    flattened = flatten_space.return_value
     optimizer.make_solve_func.assert_called_once_with(
         (flattened.low, flattened.high), problem.constraints
     )

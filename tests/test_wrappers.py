@@ -5,12 +5,13 @@
 
 """Unit tests for the third-party wrappers."""
 
+import inspect
 import typing as t
 import warnings
 
 import numpy as np
 import pytest
-from gym.spaces import Box
+from gymnasium.spaces import Box, Sequence
 from scipy.optimize import LinearConstraint
 
 from cernml import coi, optimizers
@@ -19,7 +20,7 @@ from cernml import coi, optimizers
 @pytest.fixture
 def problem() -> coi.SingleOptimizable:
     class _Problem(coi.SingleOptimizable):
-        optimization_space = Box(-1.0, 1.0, shape=(3,), dtype=float)
+        optimization_space = Box(-1.0, 1.0, shape=[3], dtype=np.double)
 
         def get_initial_params(self) -> np.ndarray:
             return np.array([0.1, 0.2, 0.0])
@@ -121,3 +122,24 @@ def test_skopt_bad_num_calls() -> None:
         coi.BadConfig, match="n_initial_points must be less than maxfun"
     ):
         optimizers.make("SkoptBayesian", n_initial_points=10, n_calls=9)
+
+
+def test_gym_compatibility_shim(problem: coi.SingleOptimizable) -> None:
+    import gym  # type: ignore[import-untyped]
+
+    space = gym.spaces.Box(-12.0, 12.0, shape=[3, 2, 1], dtype=np.double)
+    problem.optimization_space = t.cast(Box, space)
+    opt = optimizers.make("BOBYQA")
+    solve = optimizers.make_solve_func(opt, problem)
+    variables = inspect.getclosurevars(solve)
+    low, high = variables.nonlocals["bounds"]
+    assert np.array_equal(low, space.low.flatten())
+    assert np.array_equal(high, space.high.flatten())
+
+
+def test_bad_opt_space_type(problem: coi.SingleOptimizable) -> None:
+    space = Sequence(problem.optimization_space)
+    problem.optimization_space = t.cast(Box, space)
+    opt = optimizers.make("BOBYQA")
+    with pytest.raises(TypeError, match="cannot be flattened"):
+        optimizers.make_solve_func(opt, problem)

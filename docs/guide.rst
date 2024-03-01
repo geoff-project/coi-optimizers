@@ -103,7 +103,7 @@ If you have an object that subclasses `~cernml.coi.SingleOptimizable` or
 `~cernml.coi.FunctionOptimizable` …
 
     >>> from cernml.coi import SingleOptimizable
-    >>> from gym.spaces import Box
+    >>> from gymnasium.spaces import Box
     ...
     >>> class ExampleProblem(SingleOptimizable):
     ...     optimization_space = Box(x0-2, x0+2)

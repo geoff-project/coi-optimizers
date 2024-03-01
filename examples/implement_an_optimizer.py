@@ -9,7 +9,7 @@ import typing as t
 
 import click
 import numpy as np
-from gym.spaces import Box
+from gymnasium.spaces import Box
 
 from cernml.coi import Config, Configurable, ConfigValues, Constraint
 from cernml.optimizers import (
