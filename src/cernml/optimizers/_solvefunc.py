@@ -23,15 +23,13 @@ __all__ = [
 
 
 @t.overload
-def make_solve_func(optimizer: Optimizer, problem: SingleOptimizable) -> Solve:
-    ...
+def make_solve_func(optimizer: Optimizer, problem: SingleOptimizable) -> Solve: ...
 
 
 @t.overload
 def make_solve_func(
     optimizer: Optimizer, problem: FunctionOptimizable, cycle_time: float
-) -> Solve:
-    ...
+) -> Solve: ...
 
 
 def make_solve_func(
@@ -75,15 +73,13 @@ def make_solve_func(
 
 
 @t.overload
-def solve(optimizer: Optimizer, problem: SingleOptimizable) -> OptimizeResult:
-    ...
+def solve(optimizer: Optimizer, problem: SingleOptimizable) -> OptimizeResult: ...
 
 
 @t.overload
 def solve(
     optimizer: Optimizer, problem: FunctionOptimizable, cycle_time: float
-) -> OptimizeResult:
-    ...
+) -> OptimizeResult: ...
 
 
 def solve(
