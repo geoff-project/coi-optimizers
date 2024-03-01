@@ -22,6 +22,8 @@ if t.TYPE_CHECKING:
         from typing import TypeAlias
 
     # pylint: disable = unused-import, ungrouped-imports
+    from numpy.typing import NDArray
+
     from cernml.coi import Constraint
 
     from ._registration import OptimizerSpec
@@ -112,11 +114,11 @@ class OptimizeResult:
     nfev: int
 
 
-Objective: TypeAlias = t.Callable[[np.ndarray], float]
+Objective: TypeAlias = t.Callable[["NDArray"], t.SupportsFloat]
 
-Solve: TypeAlias = t.Callable[[Objective, np.ndarray], OptimizeResult]
+Solve: TypeAlias = t.Callable[[Objective, "NDArray"], OptimizeResult]
 
-Bounds: TypeAlias = t.Tuple[np.ndarray, np.ndarray]
+Bounds: TypeAlias = t.Tuple["NDArray", "NDArray"]
 
 AnyOptimizer = t.TypeVar("AnyOptimizer", bound="Optimizer")
 

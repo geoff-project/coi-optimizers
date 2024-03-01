@@ -10,6 +10,7 @@ import typing as t
 import click
 import numpy as np
 from gymnasium.spaces import Box
+from numpy.typing import NDArray
 
 from cernml.coi import Config, Configurable, ConfigValues, Constraint
 from cernml.optimizers import (
@@ -82,10 +83,10 @@ class RandomSearchOptimizer(Optimizer, Configurable):
     ) -> Solve:
         space = Box(*bounds, dtype=np.common_type(*bounds))
 
-        def is_valid(params: np.ndarray) -> bool:
+        def is_valid(params: NDArray) -> bool:
             return all(c(params) >= 0 for c in constraints)
 
-        def solve(objective: Objective, initial: np.ndarray) -> OptimizeResult:
+        def solve(objective: Objective, initial: NDArray) -> OptimizeResult:
             best_x = initial
             best_o = float(objective(initial))
             for _ in range(1, self.maxfun):

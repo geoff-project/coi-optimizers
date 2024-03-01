@@ -12,6 +12,7 @@ import warnings
 import click
 import numpy as np
 from gymnasium.spaces import Box
+from numpy.typing import NDArray
 
 from cernml import coi, optimizers
 
@@ -26,10 +27,10 @@ class ConvexToyProblem(coi.SingleOptimizable):
 
     optimization_space = Box(-1.0, 1.0, shape=[3], dtype=np.double)
 
-    def get_initial_params(self) -> np.ndarray:
+    def get_initial_params(self) -> NDArray:
         return np.array([0.1, 0.2, 0.0])
 
-    def compute_single_objective(self, params: np.ndarray) -> float:
+    def compute_single_objective(self, params: NDArray) -> float:
         return float(np.linalg.norm(params))
 
 
