@@ -23,7 +23,6 @@ readme = 'README.md'
 license = {file='COPYING'}
 dependencies = [
     'cernml-coi ~=0.8.13',
-    'gymnasium < 2',
     'importlib-metadata; python_version<"3.10"',
     'typing-extensions; python_version<"3.11"',
 ]
@@ -56,11 +55,13 @@ skopt = ['scikit-optimize ~= 0.9.0']
 all = ['cernml-coi-optimizers[bobyqa,cernml-es,scipy,skopt]']
 examples = [
     'cernml-coi-optimizers[all]',
+    'gymnasium < 2',
     'click ~= 8.0',
 ]
 test = [
     'cernml-coi-optimizers[all]',
     'gym',
+    'gymnasium',
     'pytest',
     'pytest-cov',
     'sphinx',

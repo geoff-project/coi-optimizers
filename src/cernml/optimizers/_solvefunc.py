@@ -10,11 +10,16 @@ from __future__ import annotations
 import typing as t
 from functools import partial
 
-from gymnasium import spaces
-
 from cernml.coi import FunctionOptimizable, SingleOptimizable
 
 from ._interface import Optimizer, OptimizeResult, Solve
+
+if t.TYPE_CHECKING:
+    try:
+        from gymnasium import spaces
+    except ImportError:
+        from gym import spaces  # type: ignore[no-redef]
+
 
 __all__ = [
     "make_solve_func",
@@ -137,6 +142,12 @@ def _flatten_space(space: spaces.Space) -> spaces.Box:
     the result of `flatten_space()` is not a `Box` and raise
     a `TypeError` in such a case.
     """
+    # pylint: disable = import-outside-toplevel
+    try:
+        from gymnasium import spaces
+    except ImportError:
+        from gym import spaces  # type: ignore[no-redef]
+
     if not getattr(space, "is_np_flattenable", True):
         raise TypeError(f"space cannot be flattened: {space!r}")
     space_type = type(space)
