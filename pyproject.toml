@@ -120,6 +120,7 @@ ignore-long-lines = '<?https?://\S+>?$'
 disable = [
     'fixme',
     'similarities',
+    'too-many-arguments',
 ]
 
 [tool.mypy]
