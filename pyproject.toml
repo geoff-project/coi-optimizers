@@ -63,6 +63,8 @@ test = [
     'gym',
     'pytest',
     'pytest-cov',
+    'sphinx',
+    'types-docutils',
 ]
 doc = [
     'cernml-coi-optimizers[all]',

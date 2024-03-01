@@ -173,7 +173,11 @@ def pubnames(obj: t.Any) -> t.Iterator[str]:
         t.cast(t.List[str], getattr(obj, "__all__", None))
         or (
             name
-            for name, _ in inspect.getmembers_static(obj)
+            # TODO: Ignore hint is only for Python 3.7.
+            # pylint: disable = no-member
+            for name, _ in inspect.getmembers_static(  # type: ignore
+                obj,
+            )
             if not name.startswith("_")
         )
     )
