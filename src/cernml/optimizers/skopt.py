@@ -84,7 +84,7 @@ class SkoptBayesian(Optimizer, coi.Configurable):
             )
             return OptimizeResult(
                 x=np.asarray(res.x),
-                fun=res.fun,
+                fun=float(res.fun),
                 success=True,
                 message="",
                 nit=len(res.func_vals),

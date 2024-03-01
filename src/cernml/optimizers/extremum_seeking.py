@@ -77,7 +77,7 @@ class ExtremumSeeking(Optimizer, coi.Configurable):
             )
             return OptimizeResult(
                 x=res.params,
-                fun=res.cost,
+                fun=float(res.cost),
                 success=True,
                 message="",
                 nit=res.nit,

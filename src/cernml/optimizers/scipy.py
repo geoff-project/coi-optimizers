@@ -71,7 +71,7 @@ class Cobyla(Optimizer, coi.Configurable):
             )
             return OptimizeResult(
                 x=res.x,
-                fun=res.fun,
+                fun=float(res.fun),
                 success=res.success,
                 message=res.message,
                 nit=res.nfev,
@@ -157,7 +157,7 @@ class NelderMeadSimplex(Optimizer, coi.Configurable):
             )
             return OptimizeResult(
                 x=res.x,
-                fun=res.fun,
+                fun=float(res.fun),
                 success=res.success,
                 message=res.message,
                 nit=res.nit,
@@ -272,7 +272,7 @@ class Powell(Optimizer, coi.Configurable):
             )
             return OptimizeResult(
                 x=res.x,
-                fun=res.fun,
+                fun=float(res.fun),
                 success=res.success,
                 message=res.message,
                 nit=res.nit,

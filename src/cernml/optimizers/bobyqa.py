@@ -92,7 +92,7 @@ class Bobyqa(Optimizer, coi.Configurable):
                 raise BobyqaException(res.msg)
             return OptimizeResult(
                 x=res.x,
-                fun=res.f,
+                fun=float(res.f),
                 success=res.flag == res.EXIT_SUCCESS,
                 message=res.msg,
                 nit=res.nx,

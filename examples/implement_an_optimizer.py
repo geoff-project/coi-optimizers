@@ -87,16 +87,16 @@ class RandomSearchOptimizer(Optimizer, Configurable):
 
         def solve(objective: Objective, initial: np.ndarray) -> OptimizeResult:
             best_x = initial
-            best_o = objective(initial)
+            best_o = float(objective(initial))
             for _ in range(1, self.maxfun):
                 next_x = space.sample()
                 valid = is_valid(next_x)
-                next_o = objective(next_x)
-                if valid and not next_o >= best_o:
+                next_o = float(objective(next_x))
+                if valid and next_o <= best_o:
                     best_x, best_o = next_x, next_o
             return OptimizeResult(
                 x=best_x,
-                fun=best_o,
+                fun=float(best_o),
                 success=True,
                 message="",
                 nit=self.maxfun,
