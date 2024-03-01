@@ -26,7 +26,7 @@ def test_abstract_method_raises() -> None:
             )
 
     with pytest.raises(NotImplementedError):
-        Impl().make_solve_func(*t.cast(t.List[t.Any], [None, None]))
+        Impl().make_solve_func(*t.cast(list[t.Any], [None, None]))
 
 
 def test_solve_single_optimizable(monkeypatch: pytest.MonkeyPatch) -> None:

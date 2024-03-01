@@ -13,9 +13,6 @@ import warnings
 
 from ._interface import Optimizer
 
-if t.TYPE_CHECKING:
-    import typing_extensions as tx
-
 if sys.version_info < (3, 10):
     import importlib_metadata as metadata
 else:
@@ -54,7 +51,7 @@ class OptimizerNotFound(KeyError):
     """A requested optimizer was not found in the registry."""
 
 
-registry: t.Dict[str, OptimizerSpec] = {}
+registry: dict[str, OptimizerSpec] = {}
 
 
 class OptimizerWithSpec(Optimizer):
@@ -99,14 +96,14 @@ class OptimizerSpec:
 
     def __init__(self, entry_point: metadata.EntryPoint) -> None:
         self._ep = entry_point
-        self._type: t.Optional[t.Type[Optimizer]] = None
+        self._type: type[Optimizer] | None = None
 
     @classmethod
     def from_optimizer(
         cls,
         name: str,
-        optimizer: t.Type[Optimizer],
-        dist: t.Optional[metadata.Distribution] = None,
+        optimizer: type[Optimizer],
+        dist: metadata.Distribution | None = None,
     ) -> Self:
         """Create a spec for a loaded optimizer class."""
         value = f"{optimizer.__module__}:{optimizer.__qualname__}"
@@ -142,7 +139,7 @@ class OptimizerSpec:
         return self._ep.value
 
     @property
-    def dist(self) -> t.Optional[metadata.Distribution]:
+    def dist(self) -> metadata.Distribution | None:
         """If available, the distribution_ providing the optimizer.
 
         Typically, this is `None` if the optimizer was registered
@@ -152,7 +149,7 @@ class OptimizerSpec:
         """
         return self._ep.dist
 
-    def load(self) -> t.Type[Optimizer]:
+    def load(self) -> type[Optimizer]:
         """Dynamically load the optimizer class, if necessary.
 
         If the optimizer class has not been loaded yet, this imports the
@@ -210,8 +207,8 @@ def make(name: str, *args: t.Any, **kwargs: t.Any) -> OptimizerWithSpec:
 
 def register(
     name: str,
-    optimizer: t.Union[str, t.Type[Optimizer]],
-    dist: t.Optional[metadata.Distribution] = None,
+    optimizer: str | type[Optimizer],
+    dist: metadata.Distribution | None = None,
 ) -> None:
     """Dynamically register a new `Optimizer`.
 
@@ -261,7 +258,7 @@ def register(
     registry[name] = new_spec
 
 
-def _warn_if_not_optimizer(opt: t.Type[Optimizer]) -> None:
+def _warn_if_not_optimizer(opt: type[Optimizer]) -> None:
     if not isinstance(opt, type):
         warnings.warn(f"not a type: {opt!r}", TypeWarning, stacklevel=3)
     elif not issubclass(opt, Optimizer):

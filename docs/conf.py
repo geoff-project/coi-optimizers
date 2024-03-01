@@ -94,6 +94,7 @@ autodoc_type_aliases = {
     "Bounds": "cernml.optimizers.Bounds",
     "Objective": "cernml.optimizers.Objective",
     "Solve": "~cernml.optimizers.Solve",
+    "NDArray": "~numpy.typing.NDArray",
 }
 
 napoleon_google_docstring = True
@@ -156,7 +157,7 @@ def replace_modname(modname: str) -> None:
     *modname*. It does so recursively for all public attributes (i.e.
     those whose name does not have a leading underscore).
     """
-    todo: t.List[t.Any] = [import_module(modname)]
+    todo: list[t.Any] = [import_module(modname)]
     while todo:
         parent = todo.pop()
         for pubname in pubnames(parent):
@@ -170,14 +171,10 @@ def replace_modname(modname: str) -> None:
 def pubnames(obj: t.Any) -> t.Iterator[str]:
     """Return an iterator over the public names in an object."""
     return iter(
-        t.cast(t.List[str], getattr(obj, "__all__", None))
+        t.cast(list[str], getattr(obj, "__all__", None))
         or (
             name
-            # TODO: Ignore hint is only for Python 3.7.
-            # pylint: disable = no-member
-            for name, _ in inspect.getmembers_static(  # type: ignore
-                obj,
-            )
+            for name, _ in inspect.getmembers_static(obj)
             if not name.startswith("_")
         )
     )
@@ -272,8 +269,9 @@ crossref_fixers = {
     "t.Sequence": adjust_pending_xref(reftarget="typing.Sequence"),
     "t.Optional": adjust_pending_xref(reftarget="typing.Optional", reftype="data"),
     # Autodoc fails to resolve type annotations on named tuples and data
-    # classes. Luckily, this concerns only one type.
-    "np.ndarray": adjust_pending_xref(reftarget="numpy.ndarray"),
+    # classes.
+    "NDArray": adjust_pending_xref(reftarget="numpy.typing.NDArray", reftype="data"),
+    "np.double": adjust_pending_xref(reftarget="numpy.double"),
 }
 
 

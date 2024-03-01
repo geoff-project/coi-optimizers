@@ -39,8 +39,8 @@ def make_solve_func(
 
 def make_solve_func(
     optimizer: Optimizer,
-    problem: t.Union[SingleOptimizable, FunctionOptimizable],
-    cycle_time: t.Optional[float] = None,
+    problem: SingleOptimizable | FunctionOptimizable,
+    cycle_time: float | None = None,
 ) -> Solve:
     """Create a new solve function.
 
@@ -89,8 +89,8 @@ def solve(
 
 def solve(
     optimizer: Optimizer,
-    problem: t.Union[SingleOptimizable, FunctionOptimizable],
-    cycle_time: t.Optional[float] = None,
+    problem: SingleOptimizable | FunctionOptimizable,
+    cycle_time: float | None = None,
 ) -> OptimizeResult:
     """Solve an optimization problem with the given optimizer.
 

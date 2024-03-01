@@ -12,6 +12,7 @@ import warnings
 
 import numpy as np
 import pybobyqa
+from numpy.typing import NDArray
 
 from cernml import coi
 
@@ -75,11 +76,11 @@ class Bobyqa(Optimizer, coi.Configurable):
         if constraints:
             warnings.warn("BOBYQA ignores constraints", IgnoredArgumentWarning)
 
-        def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:
+        def solve(objective: Objective, x_0: NDArray[np.floating]) -> OptimizeResult:
             nsamples = self.nsamples
             res = pybobyqa.solve(
                 objective,
-                x0=x_0,
+                x0=np.asfarray(x_0),
                 bounds=bounds,
                 rhobeg=self.rhobeg,
                 rhoend=self.rhoend,
@@ -91,7 +92,7 @@ class Bobyqa(Optimizer, coi.Configurable):
             if res.flag < 0:
                 raise BobyqaException(res.msg)
             return OptimizeResult(
-                x=res.x,
+                x=np.asfarray(res.x),
                 fun=float(res.f),
                 success=res.flag == res.EXIT_SUCCESS,
                 message=res.msg,

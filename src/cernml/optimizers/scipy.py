@@ -12,6 +12,7 @@ import warnings
 
 import numpy as np
 import scipy.optimize
+from numpy.typing import NDArray
 
 from cernml import coi
 
@@ -57,7 +58,7 @@ class Cobyla(Optimizer, coi.Configurable):
             scipy.optimize.NonlinearConstraint(lambda x: x, lower, upper)
         )
 
-        def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:
+        def solve(objective: Objective, x_0: NDArray[np.floating]) -> OptimizeResult:
             res = scipy.optimize.minimize(
                 objective,
                 method="COBYLA",
@@ -70,7 +71,7 @@ class Cobyla(Optimizer, coi.Configurable):
                 },
             )
             return OptimizeResult(
-                x=res.x,
+                x=np.asfarray(res.x),
                 fun=float(res.fun),
                 success=res.success,
                 message=res.message,
@@ -142,7 +143,7 @@ class NelderMeadSimplex(Optimizer, coi.Configurable):
                 "NelderMeadSimplex ignores constraints", IgnoredArgumentWarning
             )
 
-        def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:
+        def solve(objective: Objective, x_0: NDArray[np.floating]) -> OptimizeResult:
             res = scipy.optimize.minimize(
                 objective,
                 method="Nelder-Mead",
@@ -156,7 +157,7 @@ class NelderMeadSimplex(Optimizer, coi.Configurable):
                 },
             )
             return OptimizeResult(
-                x=res.x,
+                x=np.asfarray(res.x),
                 fun=float(res.fun),
                 success=res.success,
                 message=res.message,
@@ -208,7 +209,7 @@ class NelderMeadSimplex(Optimizer, coi.Configurable):
         self.delta_if_nonzero = values.delta_if_nonzero
         self.delta_if_zero = values.delta_if_zero
 
-    def _build_simplex(self, x_0: np.ndarray) -> np.ndarray:
+    def _build_simplex(self, x_0: NDArray[np.floating]) -> NDArray[np.floating]:
         """Build an initial simplex based on an initial point.
 
         This is identical to the simplex construction in Scipy, but
@@ -257,7 +258,7 @@ class Powell(Optimizer, coi.Configurable):
         if constraints:
             warnings.warn("Powell ignores constraints", IgnoredArgumentWarning)
 
-        def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:
+        def solve(objective: Objective, x_0: NDArray[np.floating]) -> OptimizeResult:
             res = scipy.optimize.minimize(
                 objective,
                 method="Powell",
@@ -271,7 +272,7 @@ class Powell(Optimizer, coi.Configurable):
                 },
             )
             return OptimizeResult(
-                x=res.x,
+                x=np.asfarray(res.x),
                 fun=float(res.fun),
                 success=res.success,
                 message=res.message,

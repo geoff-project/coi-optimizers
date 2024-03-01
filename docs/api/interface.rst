@@ -20,7 +20,8 @@ The Optimizer Interface
     :type: typing.TypeAlias
 
     :ref:`Type alias <type-aliases>`  for functions with signature
-    (*obj*: `Objective`, *x0*: `~numpy.ndarray`) → `OptimizeResult`.
+    (*obj*: `Objective`, *x0*: `~numpy.typing.NDArray`\ [`~numpy.double`])
+    → `OptimizeResult`.
 
     This is the function returned by `~Optimizer.make_solve_func()`. You have
     to call it to actually run the optimization procedure. It may raise an
@@ -32,7 +33,8 @@ The Optimizer Interface
     :type: typing.TypeAlias
 
     :ref:`Type alias <type-aliases>` for functions with signature
-    (*x*: `~numpy.ndarray`) → `float`.
+    (*x*: `~numpy.typing.NDArray`\ [`~numpy.double`])
+    → `~typing.SupportsFloat`.
 
     This is the objective function that is passed to `Solve`. It takes an
     evaluation point *x* of the same shape as the `Bounds` passed to
@@ -43,8 +45,9 @@ The Optimizer Interface
 .. attribute:: Bounds
     :type: typing.TypeAlias
 
-    :ref:`Type alias <type-aliases>` of `~typing.Tuple`\ [`~numpy.ndarray`,
-    `~numpy.ndarray`].
+    :ref:`Type alias <type-aliases>` of
+    `tuple`\ [`~numpy.typing.NDArray`\ [`~numpy.floating`],
+    `~numpy.typing.NDArray`\ [`~numpy.floating`].
 
     This tuple describes the lower and upper search space bounds for those
     optimization algorithms that use such bounds. Both arrays must have the

@@ -92,10 +92,10 @@ class IgnoredArgumentWarning(Warning):
 class OptimizeResult:
     """Summary of the optimization as returned by `Solve`.
 
-    This class is modeled after `scipy.optimize.OptimizeResult`, but
-    lacks all attributes related to derivatives (Jacobians, Hessians).
-    Furthermore, it is a :doc:`dataclass <std:library/dataclasses>`
-    instead of a dict.
+    This :doc:`dataclass <std:library/dataclasses>` is modeled after
+    `scipy.optimize.OptimizeResult`, but as a dataclass instead of
+    a dict. Furthermore, it lacks all attributes related to derivatives
+    (Jacobians, Hessians).
 
     Attributes:
         x: The solution of the optimization.
@@ -106,7 +106,7 @@ class OptimizeResult:
         nfev: The number of evaluations of the objective function.
     """
 
-    x: np.ndarray  # pylint: disable=invalid-name
+    x: NDArray[np.double]  # pylint: disable=invalid-name
     fun: float
     success: bool
     message: str
@@ -114,11 +114,11 @@ class OptimizeResult:
     nfev: int
 
 
-Objective: TypeAlias = t.Callable[["NDArray"], t.SupportsFloat]
+Objective: TypeAlias = t.Callable[["NDArray[np.double]"], t.SupportsFloat]
 
-Solve: TypeAlias = t.Callable[[Objective, "NDArray"], OptimizeResult]
+Solve: TypeAlias = t.Callable[[Objective, "NDArray[np.floating]"], OptimizeResult]
 
-Bounds: TypeAlias = t.Tuple["NDArray", "NDArray"]
+Bounds: TypeAlias = tuple["NDArray[np.floating]", "NDArray[np.floating]"]
 
 AnyOptimizer = t.TypeVar("AnyOptimizer", bound="Optimizer")
 
@@ -168,7 +168,7 @@ class Optimizer(abc.ABC):
 
     # pylint: disable = too-few-public-methods
 
-    spec: t.Optional[OptimizerSpec] = None
+    spec: OptimizerSpec | None = None
 
     @abc.abstractmethod
     def make_solve_func(

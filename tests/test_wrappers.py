@@ -12,6 +12,7 @@ import warnings
 import numpy as np
 import pytest
 from gymnasium.spaces import Box, Sequence
+from numpy.typing import NDArray
 from scipy.optimize import LinearConstraint
 
 from cernml import coi, optimizers
@@ -22,11 +23,11 @@ def problem() -> coi.SingleOptimizable:
     class _Problem(coi.SingleOptimizable):
         optimization_space = Box(-1.0, 1.0, shape=[3], dtype=np.double)
 
-        def get_initial_params(self) -> np.ndarray:
+        def get_initial_params(self) -> NDArray[np.double]:
             return np.array([0.1, 0.2, 0.0])
 
-        def compute_single_objective(self, params: np.ndarray) -> float:
-            return float(np.linalg.norm(params))
+        def compute_single_objective(self, params: NDArray[np.double]) -> np.double:
+            return np.linalg.norm(params)
 
     return _Problem()
 

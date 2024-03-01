@@ -16,7 +16,7 @@ The Registry API
 .. autofunction:: register
 
 .. data:: registry
-    :type: typing.Dict[str, OptimizerSpec]
+    :type: dict[str, OptimizerSpec]
     :value: {…}
 
     The global registry of all optimizers.

@@ -12,6 +12,7 @@ import warnings
 
 import numpy as np
 import skopt.optimizer
+from numpy.typing import NDArray
 
 from cernml import coi
 
@@ -69,7 +70,7 @@ class SkoptBayesian(Optimizer, coi.Configurable):
             else None
         )
 
-        def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:
+        def solve(objective: Objective, x_0: NDArray[np.floating]) -> OptimizeResult:
             res = skopt.optimizer.gp_minimize(
                 objective,
                 x0=list(x_0),
@@ -83,7 +84,7 @@ class SkoptBayesian(Optimizer, coi.Configurable):
                 callback=callback,
             )
             return OptimizeResult(
-                x=np.asarray(res.x),
+                x=np.asfarray(res.x),
                 fun=float(res.fun),
                 success=True,
                 message="",

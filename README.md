@@ -114,12 +114,13 @@ import typing as t
 import numpy as np
 from cernml.optimizers import Bounds, Objective, Optimizer, OptimizeResult, Solve
 from cernml.coi import Constraint
+from numpy.typing import NDArray
 
 class MyOptimizer(Optimizer):
     def make_solve_func(
         self, bounds: Bounds, constraints: t.Sequence[Constraint]
     ) -> Solve:
-        def solve(obj: Objective, x0: np.ndarray) -> OptimizeResult:
+        def solve(obj: Objective, x0: NDArray[np.double]) -> OptimizeResult:
             ...
 
         return solve
@@ -135,7 +136,7 @@ import numpy as np
 import my_project
 from cernml.optimizers import make
 
-def objective(x: np.ndarray) -> float:
+def objective(x: NDArray[np.double]) -> float:
     return np.sum(x**4 - x**2)
 
 x0 = np.array([0.0, 0.0])

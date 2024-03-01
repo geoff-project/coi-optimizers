@@ -11,6 +11,7 @@ import typing as t
 import warnings
 
 import numpy as np
+from numpy.typing import NDArray
 
 from cernml import coi, extremum_seeking
 
@@ -63,7 +64,7 @@ class ExtremumSeeking(Optimizer, coi.Configurable):
         if constraints:
             warnings.warn("ExtremumSeeking ignores constraints", IgnoredArgumentWarning)
 
-        def solve(objective: Objective, x_0: np.ndarray) -> OptimizeResult:
+        def solve(objective: Objective, x_0: NDArray[np.floating]) -> OptimizeResult:
             res = extremum_seeking.optimize(
                 objective,
                 x0=x_0,
@@ -76,7 +77,7 @@ class ExtremumSeeking(Optimizer, coi.Configurable):
                 decay_rate=self.decay_rate,
             )
             return OptimizeResult(
-                x=res.params,
+                x=np.asfarray(res.params),
                 fun=float(res.cost),
                 success=True,
                 message="",

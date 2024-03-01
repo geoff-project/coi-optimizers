@@ -37,7 +37,7 @@ class ConvexToyProblem(coi.SingleOptimizable):
 def apply_config(
     optimizer: optimizers.AnyOptimizer,
     nfev: t.Optional[int] = None,
-    extra_config: t.Optional[t.Dict[str, str]] = None,
+    extra_config: t.Optional[dict[str, str]] = None,
 ) -> optimizers.AnyOptimizer:
     """Apply all config options to the given optimizer.
 
@@ -70,7 +70,7 @@ def apply_config(
     # Acquire the optimizer's presets. If we have an override for any of
     # them, use it instead.
     config: coi.Config = optimizer.get_config()
-    raw_values: t.Dict[str, t.Any] = {
+    raw_values: dict[str, t.Any] = {
         name: overrides.get(name, preset_value)
         for name, preset_value in config.get_field_values().items()
     }
@@ -142,7 +142,7 @@ def main(
     optimizer: str = "BOBYQA",
     nfev: t.Optional[int] = None,
     no_run: bool = False,
-    extra_config: t.Tuple[str, ...] = (),
+    extra_config: tuple[str, ...] = (),
 ) -> None:
     """Run a generic optimizer on a minimal optimization problem.
 

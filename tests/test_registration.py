@@ -15,7 +15,7 @@ from cernml.optimizers._registration import metadata
 
 
 @pytest.fixture
-def opt_class() -> t.Type[_reg.Optimizer]:
+def opt_class() -> type[_reg.Optimizer]:
     return type("MockOptimizer", (Mock, _reg.Optimizer), {"make_solve_func": Mock()})
 
 
@@ -104,7 +104,7 @@ def test_spec_load_caches(entry_point: metadata.EntryPoint) -> None:
     assert opt1 is opt2
 
 
-def test_spec_load_is_noop_with_class(opt_class: t.Type[_reg.Optimizer]) -> None:
+def test_spec_load_is_noop_with_class(opt_class: type[_reg.Optimizer]) -> None:
     # pylint: disable = protected-access
     name = Mock(spec=str)
     spec = _reg.OptimizerSpec.from_optimizer(name, opt_class)
@@ -166,7 +166,7 @@ def test_register_with_str() -> None:
     name = Mock(spec=str)
     value = Mock(spec=str)
     dist = Mock(spec=metadata.Distribution)
-    registry: t.Dict[str, _reg.OptimizerSpec] = {}
+    registry: dict[str, _reg.OptimizerSpec] = {}
     with patch("cernml.optimizers._registration.registry", registry):
         _reg.register(name, value, dist)
     reg_name, spec = registry.popitem()
@@ -175,10 +175,10 @@ def test_register_with_str() -> None:
     assert spec.dist == dist
 
 
-def test_register_with_class(opt_class: t.Type[_reg.Optimizer]) -> None:
+def test_register_with_class(opt_class: type[_reg.Optimizer]) -> None:
     name = Mock(spec=str)
     dist = Mock(spec=metadata.Distribution)
-    registry: t.Dict[str, _reg.OptimizerSpec] = {}
+    registry: dict[str, _reg.OptimizerSpec] = {}
     with patch("cernml.optimizers._registration.registry", registry):
         _reg.register(name, opt_class, dist)
     reg_name, spec = registry.popitem()
@@ -198,7 +198,7 @@ def test_register_twice() -> None:
     name = Mock(spec=str)
     old_value = Mock(spec=str)
     new_value = Mock(spec=str)
-    registry: t.Dict[str, _reg.OptimizerSpec] = {}
+    registry: dict[str, _reg.OptimizerSpec] = {}
     with patch("cernml.optimizers._registration.registry", registry):
         _reg.register(name, old_value)
         with pytest.warns(_reg.DuplicateOptimizerWarning, match=str(old_value)):
