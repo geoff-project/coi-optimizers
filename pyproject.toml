@@ -105,6 +105,7 @@ exclude_also = [
     'if \w*\.TYPE_CHECKING',
     '^\s*\.\.\.$',
     'raise NotImplementedError',
+    '^\s*@(t\w*\.)?overload$',
 ]
 
 [tool.pylint.main]
