@@ -42,7 +42,7 @@ repos:
     additional_dependencies:
     - "types-docutils"
     - "typing-extensions>=4.0; python_version<'3.11'"
-    - "git+https://gitlab.cern.ch/geoff/optimizers/cernml-extremum-seeking/"
+    - "git+https://gitlab.cern.ch/geoff/optimizers/cernml-extremum-seeking@v4.0.0"
 - repo: local
   hooks:
   - id: pylint
