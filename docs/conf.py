@@ -48,9 +48,25 @@ ROOTDIR = pathlib.Path(__file__).absolute().parent.parent
 # -- Project information -----------------------------------------------
 
 project = "cernml-coi-optimizers"
+dist = importlib_metadata.distribution(project)
+
 copyright = "2023-2024 GSI Helmholtzzentrum für Schwerionenforschung"
 author = "Nico Madysa"
-release = importlib_metadata.version(project)
+release = dist.version
+version = release.partition("+")[0]
+html_last_updated_fmt = "%b %d %Y"
+
+for entry in dist.metadata.get_all("Project-URL", []):
+    kind, url = entry.split(", ")
+    if kind == "gitlab":
+        gitlab_url = url
+        license_url = f"{gitlab_url}-/blob/master/COPYING"
+        issues_url = f"{gitlab_url}/-/issues"
+        break
+else:
+    gitlab_url = ""
+    license_url = ""
+    issues_url = ""
 
 # -- General configuration ---------------------------------------------
 
@@ -82,6 +98,21 @@ toc_object_entries_show_parents = "hide"
 
 # Avoid role annotations as much as possible.
 default_role = "py:obj"
+
+maximum_signature_line_length = 88
+
+# -- Options for HTML output -------------------------------------------
+
+# The theme to use for HTML and HTML Help pages.  See the documentation
+# for a list of builtin themes.
+html_theme = "python_docs_theme"
+html_theme_options = {
+    "root_url": "https://acc-py.web.cern.ch/",
+    "root_name": "Acc-Py Documentation server",
+    "license_url": license_url,
+    "issues_url": issues_url,
+}
+templates_path = ["./_theme/"]
 
 # -- Options for Autodoc -----------------------------------------------
 
@@ -120,18 +151,6 @@ intersphinx_mapping = {
     "skopt": ("https://scikit-optimize.github.io/stable/", None),
     "bobyqa": ("https://numericalalgorithmsgroup.github.io/pybobyqa/build/html/", None),
 }
-
-# -- Options for HTML output -------------------------------------------
-
-# The theme to use for HTML and HTML Help pages.  See the documentation
-# for a list of builtin themes.
-html_theme = "sphinxdoc"
-
-# Add any paths that contain custom static files (such as style sheets)
-# here, relative to this directory. They are copied after the builtin
-# static files, so a file named "default.css" will overwrite the builtin
-# "default.css". html_static_path = ["_static"]
-
 
 # -- Custom code -------------------------------------------------------
 
