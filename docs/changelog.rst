@@ -14,15 +14,27 @@ Unreleased
 
 No changes yet!
 
+v2.0.0
+------
+
+- BREAKING: Drop support for Python 3.7 and 3.8. The new minimum Python version
+  is 3.9.
+- BREAKING: Update minimum :doc:`NumPy <np:index>` version to 1.22.
+- BREAKING: Update minimum :doc:`cernml-extremum-seeking <ces:index>` version
+  to 4.0.
+- FIX: The documentation for :doc:`SciPy wrappers <api/third_party_wrappers>`
+  now documents the meaning of each parameter.
+
 v1.2.0
 ------
 
-- Add compatibility with the new Gymnasium_ package. This is only used when
+- ADD: compatibility with the new Gymnasium_ package. This is only used when
   calling `cernml.optimizers.make_solve_func()`. It now imports Gymnasium
   lazily and will fall back to the (deprecated) Gym package if it cannot find
   Gymnasium. This in in preparation for the next major release of the COI_.
-- This is the last release to support Gym and Python 3.7. Starting with v2.0,
-  Gymnasium will be required and the minimum Python version will be 3.9.
+- WARNING: This is the last release to support Gym and Python 3.7. Starting
+  with v2.0, Gymnasium will be required and the minimum Python version will be
+  3.9.
 
 .. _Gymnasium: https://gymnasium.farama.org/
 .. _COI: https://gitlab.cern.ch/geoff/cernml-coi/
