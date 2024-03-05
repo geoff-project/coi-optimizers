@@ -9,12 +9,25 @@ The Optimizer Interface
 
 .. currentmodule:: cernml.optimizers
 
+The core interface of this package consists of the following :term:`abstract
+base class` with exactly one abstract method and the :doc:`dataclass
+<std:library/dataclasses>` it is expected to return. Several :ref:`type aliases
+<type-aliases>` are available to make the definition more easily
+understandable.
+
+Classes
+-------
+
 .. autoclass:: Optimizer
    :members:
 
-.. autofunction:: solve
+.. autoclass:: OptimizeResult
+   :members:
 
-.. autofunction:: make_solve_func
+.. autoexception:: IgnoredArgumentWarning
+
+Type Aliases
+------------
 
 .. attribute:: Solve
     :type: typing.TypeAlias
@@ -52,37 +65,3 @@ The Optimizer Interface
     This tuple describes the lower and upper search space bounds for those
     optimization algorithms that use such bounds. Both arrays must have the
     same shape.
-
-.. autoclass:: OptimizeResult
-   :members:
-
-.. data:: AnyOptimizer
-    :type: typing.TypeVar
-
-    :ref:`Constrained type variable <std:typing-constrained-typevar>` that
-    allows to be generic over any `Optimizer`.
-
-    If you use a type checker, it allows code like this to pass:
-
-    .. code-block:: python
-
-        from cernml.optimizers import Optimizer, AnyOptimizer
-
-        class MyOptimizer(Optimizer):
-            ...
-
-        # If the annotation were just `Optimizer`, we
-        # would lose the `MyOptimizer` after this call.
-        def configure(opt: AnyOptimizer) -> AnyOptimizer:
-            ...
-            return opt
-
-        opt = configure(MyOptimizer())
-
-        # Type checker knows that `opt` is still a `MyOptimizer`.
-        def require_concrete(opt: MyOptimizer) -> None:
-            ...
-
-        require_concrete(opt)
-
-.. autoexception:: IgnoredArgumentWarning

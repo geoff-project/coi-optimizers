@@ -13,5 +13,6 @@ API Reference
    :maxdepth: 2
 
    interface
+   coi_integration
    registration
    third_party_wrappers
