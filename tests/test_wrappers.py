@@ -8,6 +8,7 @@
 import inspect
 import typing as t
 import warnings
+from unittest.mock import ANY, Mock, call
 
 import numpy as np
 import pytest
@@ -144,3 +145,38 @@ def test_bad_opt_space_type(problem: coi.SingleOptimizable) -> None:
     opt = optimizers.make("BOBYQA")
     with pytest.raises(TypeError, match="cannot be flattened"):
         optimizers.make_solve_func(opt, problem)
+
+
+def test_gym_fallback(
+    monkeypatch: pytest.MonkeyPatch, problem: coi.SingleOptimizable
+) -> None:
+    # Given:
+    opt = optimizers.make("BOBYQA")
+    gym = Mock(name="gym")
+    original_import = __import__
+
+    def mock_import(name: str, *args: t.Any, **kwargs: t.Any) -> t.Any:
+        """Force use of the Gym fallback."""
+        if name == "gymnasium":
+            raise ModuleNotFoundError(f"No module named {name!r}")
+        if name == "gym":
+            return gym
+        return original_import(name, *args, **kwargs)
+
+    imp = Mock(name="__import__", side_effect=mock_import)
+
+    # When:
+    with monkeypatch.context() as m:
+        m.setattr("builtins.__import__", imp)
+        solve = optimizers.make_solve_func(opt, problem)
+
+    # Then:
+    assert imp.call_args_list == [
+        call("gymnasium", ANY, None, ("spaces",), 0),
+        call("gym", ANY, None, ("spaces",), 0),
+    ]
+    box = gym.spaces.flatten_space.return_value
+    variables = inspect.getclosurevars(solve)
+    low, high = variables.nonlocals["bounds"]
+    assert low == box.low
+    assert high == box.high
