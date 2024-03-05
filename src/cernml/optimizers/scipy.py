@@ -33,7 +33,14 @@ __all__ = [
 
 
 class Cobyla(Optimizer, coi.Configurable):
-    """Adapter for the COBYLA algorithm."""
+    """Adapter for the COBYLA algorithm.
+
+    For an explanation of the parameters, see
+    :ref:`scipy:optimize.minimize-cobyla` in the :doc:`scipy:index`.
+
+    Our parameter *maxfun* corresponds to *maxiter* in SciPy and our
+    *rhoend* corresponds to *tol* in SciPy.
+    """
 
     def __init__(
         self,
@@ -110,7 +117,27 @@ class Cobyla(Optimizer, coi.Configurable):
 
 
 class NelderMeadSimplex(Optimizer, coi.Configurable):
-    """Adapter for the Nelder–Mead algorithm."""
+    """Adapter for the Nelder–Mead algorithm.
+
+    For an explanation of the parameters, see
+    :ref:`scipy:optimize.minimize-neldermead` in the :doc:`scipy:index`.
+
+    Our parameter *maxfun* corresponds to *maxfev* in SciPy and our
+    *tolerance* corresponds to *tol* in SciPy.
+
+    The parameters *delta_if_zero* and *delta_if_nonzero* are used to
+    construct the initial simplex as follows:
+
+    - A problem with *n* degrees of freedom is initialized with *n* + 1
+      points *x*\u200a₀ … *x*\u200aₙ₊₁.
+    - the first point *x*\u200a₀ is exactly the return value of
+      :meth:`~coi:cernml.coi.SingleOptimizable.get_initial_params()`.
+    - The point *x*\u200aᵢ is equal to *x*\u200a₀ in all coordinates
+      except the *i*-th one. If the *i*-th coordinate of *x*\u200a₀ is
+      zero, it has the value *delta_if_zero* in *x*\u200aᵢ. If it is
+      nonzero in *x*\u200a₀, it has that value multiplied by
+      1 + *delta_if_nonzero* in *x*\u200aᵢ.
+    """
 
     DELTA_IF_ZERO: t.ClassVar[float] = 0.001
     DELTA_IF_NONZERO: t.ClassVar[float] = 0.05
@@ -232,7 +259,16 @@ class NelderMeadSimplex(Optimizer, coi.Configurable):
 
 
 class Powell(Optimizer, coi.Configurable):
-    """Adapter for the Powell's conjugate-direction method."""
+    """Adapter for the Powell's conjugate-direction method.
+
+    For an explanation of the parameters, see
+    :ref:`scipy:optimize.minimize-powell` in the :doc:`scipy:index`.
+
+    Our parameter *maxfun* corresponds to *maxfev* in SciPy and our
+    *tolerance* corresponds to *tol* in SciPy. Our parameter
+    *initial_step_size* sets the parameter *direc* to a unit matrix
+    multiplied by that factor.
+    """
 
     def __init__(
         self,
