@@ -23,7 +23,7 @@ readme = 'README.md'
 license = {file='COPYING'}
 requires-python = '>=3.9'
 dependencies = [
-    'cernml-coi ~=0.8.13',
+    'cernml-coi >= 0.8.13',
     'numpy ~= 1.22',
     'importlib-metadata; python_version<"3.10"',
     'typing-extensions; python_version<"3.11"',

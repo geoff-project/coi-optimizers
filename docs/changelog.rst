@@ -14,6 +14,11 @@ Unreleased
 
 No changes yet!
 
+v2.0.1
+------
+
+- FIX: Relax dependency on `cernml.coi`.
+
 v2.0.0
 ------
 
