@@ -14,6 +14,11 @@ Unreleased
 
 No changes yet!
 
+v2.0.2
+------
+
+- FIX: Relax dependency on `numpy`.
+
 v2.0.1
 ------
 
