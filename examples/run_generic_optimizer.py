@@ -27,7 +27,10 @@ class ConvexToyProblem(coi.SingleOptimizable):
 
     optimization_space = Box(-1.0, 1.0, shape=[3], dtype=np.double)
 
-    def get_initial_params(self) -> NDArray:
+    def get_initial_params(
+        self, *, seed: int | None = None, options: dict[str, t.Any] | None = None
+    ) -> NDArray:
+        super().get_initial_params(seed=seed, options=options)
         return np.array([0.1, 0.2, 0.0])
 
     def compute_single_objective(self, params: NDArray) -> float:

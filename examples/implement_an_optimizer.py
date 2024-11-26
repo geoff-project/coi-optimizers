@@ -119,7 +119,8 @@ def main(nfev: int = 1000) -> None:
     """Run a custom random-search optimization algorithm."""
     opt = make("RandomSearch", maxfun=nfev)
     solve = opt.make_solve_func(bounds=(-np.ones(3), np.ones(3)), constraints=[])
-    res = solve(np.linalg.norm, np.random.uniform(-1, 1, size=3))
+    x0 = np.random.default_rng().uniform(-1.0, 1.0, size=3)
+    res = solve(np.linalg.norm, x0)
     print(
         f"Best result after {res.nit} iterations of {opt.spec.name}:",
         f"{res.fun:.3g} at x={res.x}",
