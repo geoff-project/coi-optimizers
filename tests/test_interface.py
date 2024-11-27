@@ -11,7 +11,7 @@ from unittest import mock
 import pytest
 from gymnasium.spaces import Box
 
-from cernml.coi import Constraint, FunctionOptimizable, SingleOptimizable
+from cernml.coi.protocols import Constraint, FunctionOptimizable, SingleOptimizable
 from cernml.optimizers import Bounds, Objective, Optimizer, Solve, solve
 
 
@@ -39,6 +39,7 @@ def test_solve_single_optimizable(monkeypatch: pytest.MonkeyPatch) -> None:
     flattened.mock_add_spec(Box(-1, 1, [1]))
     monkeypatch.setattr("gymnasium.spaces.flatten_space", flatten_space)
     problem = mock.Mock(SingleOptimizable)
+    problem.unwrapped = problem
     optimizer = mock.Mock(Optimizer)
     solvefunc = optimizer.make_solve_func.return_value
     solvefunc.side_effect = _solve_side_effect
@@ -67,6 +68,7 @@ def test_solve_function_optimizable(monkeypatch: pytest.MonkeyPatch) -> None:
     flattened.mock_add_spec(Box(-1, 1, [1]))
     monkeypatch.setattr("gymnasium.spaces.flatten_space", flatten_space)
     problem = mock.Mock(FunctionOptimizable)
+    problem.unwrapped = problem
     optimizer = mock.Mock(Optimizer)
     solvefunc = optimizer.make_solve_func.return_value
     solvefunc.side_effect = _solve_side_effect
