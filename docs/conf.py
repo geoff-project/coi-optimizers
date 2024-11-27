@@ -271,7 +271,7 @@ crossref_fixers = {
     # Autodoc thinks this is a class, but it's not. (It *should* be
     # data, but no, it's an attribute.)
     "Constraint": adjust_pending_xref(
-        reftarget="cernml.coi.Constraint", reftype="attr"
+        reftarget="cernml.coi.Constraint", reftype="data"
     ),
     # Autodoc is very bad at resolving `typing` members, so we need to
     # give it a push.
