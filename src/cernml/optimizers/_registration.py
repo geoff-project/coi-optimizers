@@ -18,12 +18,13 @@ if sys.version_info < (3, 10):
 else:
     from importlib import metadata
 
-if sys.version_info < (3, 11):
-    from typing_extensions import Self
-else:
-    from typing import Self
+if t.TYPE_CHECKING:
+    if sys.version_info < (3, 11):
+        from typing_extensions import Self
+    else:
+        from typing import Self
 
-__all__ = [
+__all__ = (
     "EP_GROUP",
     "DuplicateOptimizerWarning",
     "OptimizerNotFound",
@@ -34,7 +35,7 @@ __all__ = [
     "register",
     "registry",
     "spec",
-]
+)
 
 EP_GROUP = "cernml.optimizers"
 
@@ -65,7 +66,7 @@ class OptimizerWithSpec(Optimizer):
 
     spec: OptimizerSpec
 
-    def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:
+    def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:  # noqa: ARG002
         raise TypeError("this class is for type checking only, do not instantiate it")
 
 

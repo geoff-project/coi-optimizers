@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import sys
 import typing as t
 import warnings
 
@@ -24,9 +25,13 @@ from ._interface import (
     Solve,
 )
 
-__all__ = [
-    "ExtremumSeeking",
-]
+if sys.version_info < (3, 12):
+    from typing_extensions import override
+else:
+    from typing import override
+
+
+__all__ = ("ExtremumSeeking",)
 
 
 class ExtremumSeeking(Optimizer, coi.Configurable):
@@ -58,11 +63,16 @@ class ExtremumSeeking(Optimizer, coi.Configurable):
         config = self.get_config()
         self.apply_config(config.validate_all(config.get_field_values()))
 
+    @override
     def make_solve_func(
         self, bounds: Bounds, constraints: t.Sequence[coi.Constraint]
     ) -> Solve:
         if constraints:
-            warnings.warn("ExtremumSeeking ignores constraints", IgnoredArgumentWarning)
+            warnings.warn(
+                "ExtremumSeeking ignores constraints",
+                category=IgnoredArgumentWarning,
+                stacklevel=2,
+            )
 
         def solve(objective: Objective, x_0: NDArray[np.floating]) -> OptimizeResult:
             res = extremum_seeking.optimize(
@@ -77,7 +87,7 @@ class ExtremumSeeking(Optimizer, coi.Configurable):
                 decay_rate=self.decay_rate,
             )
             return OptimizeResult(
-                x=np.asfarray(res.params),
+                x=np.asarray(res.params, dtype=float),
                 fun=float(res.cost),
                 success=True,
                 message="",
@@ -87,6 +97,7 @@ class ExtremumSeeking(Optimizer, coi.Configurable):
 
         return solve
 
+    @override
     def get_config(self) -> coi.Config:
         config = coi.Config()
         config.add(
@@ -136,6 +147,7 @@ class ExtremumSeeking(Optimizer, coi.Configurable):
         )
         return config
 
+    @override
     def apply_config(self, values: coi.ConfigValues) -> None:
         if values.gain == 0.0:
             raise coi.BadConfig("gain must not be zero")

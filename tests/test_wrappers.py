@@ -5,6 +5,8 @@
 
 """Unit tests for the third-party wrappers."""
 
+from __future__ import annotations
+
 import inspect
 import typing as t
 import warnings
@@ -24,7 +26,10 @@ def problem() -> coi.SingleOptimizable:
     class _Problem(coi.SingleOptimizable):
         optimization_space = Box(-1.0, 1.0, shape=[3], dtype=np.double)
 
-        def get_initial_params(self) -> NDArray[np.double]:
+        def get_initial_params(
+            self, *, seed: int | None = None, options: dict[str, t.Any] | None = None
+        ) -> NDArray[np.double]:
+            super().get_initial_params(seed=seed, options=options)
             return np.array([0.1, 0.2, 0.0])
 
         def compute_single_objective(self, params: NDArray[np.double]) -> np.double:
@@ -64,7 +69,7 @@ def configure_optimizer(optimizer: optimizers.Optimizer) -> optimizers.Optimizer
 
 
 @pytest.mark.parametrize(
-    "name, nfev",
+    ("name", "nfev"),
     {
         "BOBYQA": 15,
         "COBYLA": 20,
@@ -108,8 +113,7 @@ def test_bad_bobyqa_bounds(problem: coi.SingleOptimizable) -> None:
     assert isinstance(space, Box)
     solve = opt.make_solve_func((space.low, space.high), problem.constraints)
     with pytest.raises(BobyqaException):
-        res = solve(problem.compute_single_objective, np.zeros(2))
-        raise RuntimeError(res.message)
+        solve(problem.compute_single_objective, np.zeros(2))
 
 
 @pytest.mark.parametrize("field", ["gain", "oscillation_size", "decay_rate"])

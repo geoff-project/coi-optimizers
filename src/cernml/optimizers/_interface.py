@@ -14,21 +14,22 @@ import typing as t
 import numpy as np
 
 if t.TYPE_CHECKING:
+    # pylint: disable = unused-import, ungrouped-imports
     import sys
 
-    if sys.version_info < (3, 11):
+    if sys.version_info < (3, 10):
         from typing_extensions import TypeAlias
     else:
         from typing import TypeAlias
 
-    # pylint: disable = unused-import, ungrouped-imports
     from numpy.typing import NDArray
 
     from cernml.coi import Constraint
 
     from ._registration import OptimizerSpec
 
-__all__ = [
+
+__all__ = (
     "AnyOptimizer",
     "Bounds",
     "IgnoredArgumentWarning",
@@ -36,7 +37,7 @@ __all__ = [
     "OptimizeResult",
     "Optimizer",
     "Solve",
-]
+)
 
 
 class IgnoredArgumentWarning(Warning):
@@ -46,7 +47,6 @@ class IgnoredArgumentWarning(Warning):
     the `Bounds` passed to `~Optimizer.make_solve_func()`.
 
     Example:
-
         Given the following optimization problem:
 
         >>> def objective(x):
@@ -187,4 +187,4 @@ class Optimizer(abc.ABC):
                 should uphold. See `~scipy.optimize.LinearConstraint`
                 and `~scipy.optimize.NonlinearConstraint` for details.
         """
-        raise NotImplementedError()
+        raise NotImplementedError

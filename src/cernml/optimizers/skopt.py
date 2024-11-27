@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import sys
 import typing as t
 import warnings
 
@@ -25,9 +26,13 @@ from ._interface import (
     Solve,
 )
 
-__all__ = [
-    "SkoptBayesian",
-]
+if sys.version_info < (3, 12):
+    from typing_extensions import override
+else:
+    from typing import override
+
+
+__all__ = ("SkoptBayesian",)
 
 
 class SkoptBayesian(Optimizer, coi.Configurable):
@@ -59,11 +64,16 @@ class SkoptBayesian(Optimizer, coi.Configurable):
         config = self.get_config()
         self.apply_config(config.validate_all(config.get_field_values()))
 
+    @override
     def make_solve_func(
         self, bounds: Bounds, constraints: t.Sequence[coi.Constraint]
     ) -> Solve:
         if constraints:
-            warnings.warn("SkoptBayesian ignores constraints", IgnoredArgumentWarning)
+            warnings.warn(
+                "SkoptBayesian ignores constraints",
+                category=IgnoredArgumentWarning,
+                stacklevel=2,
+            )
         callback = (
             (lambda res: res.fun < self.min_objective)
             if self.check_convergence
@@ -84,7 +94,7 @@ class SkoptBayesian(Optimizer, coi.Configurable):
                 callback=callback,
             )
             return OptimizeResult(
-                x=np.asfarray(res.x),
+                x=np.asarray(res.x, dtype=float),
                 fun=float(res.fun),
                 success=True,
                 message="",
@@ -94,6 +104,7 @@ class SkoptBayesian(Optimizer, coi.Configurable):
 
         return solve
 
+    @override
     def get_config(self) -> coi.Config:
         config = coi.Config()
         config.add(
@@ -152,6 +163,7 @@ class SkoptBayesian(Optimizer, coi.Configurable):
         )
         return config
 
+    @override
     def apply_config(self, values: coi.ConfigValues) -> None:
         if values.n_initial_points > values.n_calls:
             raise coi.BadConfig("n_initial_points must be less than maxfun")

@@ -107,7 +107,8 @@ If you have an object that subclasses `~cernml.coi.SingleOptimizable` or
     ...
     >>> class ExampleProblem(SingleOptimizable):
     ...     optimization_space = Box(x0-2, x0+2)
-    ...     def get_initial_params(self):
+    ...     def get_initial_params(self, seed=None, options=None):
+    ...         super().get_initial_params(seed=seed, options=options)
     ...         return x0
     ...     def compute_single_objective(self, params):
     ...         return objective(params)

@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import sys
 import typing as t
 import warnings
 
@@ -25,10 +26,16 @@ from ._interface import (
     Solve,
 )
 
-__all__ = [
+if sys.version_info < (3, 12):
+    from typing_extensions import override
+else:
+    from typing import override
+
+
+__all__ = (
     "Bobyqa",
     "BobyqaException",
-]
+)
 
 
 class BobyqaException(Exception):
@@ -70,17 +77,22 @@ class Bobyqa(Optimizer, coi.Configurable):
         config = self.get_config()
         self.apply_config(config.validate_all(config.get_field_values()))
 
+    @override
     def make_solve_func(
         self, bounds: Bounds, constraints: t.Sequence[coi.Constraint]
     ) -> Solve:
         if constraints:
-            warnings.warn("BOBYQA ignores constraints", IgnoredArgumentWarning)
+            warnings.warn(
+                "BOBYQA ignores constraints",
+                category=IgnoredArgumentWarning,
+                stacklevel=2,
+            )
 
         def solve(objective: Objective, x_0: NDArray[np.floating]) -> OptimizeResult:
             nsamples = self.nsamples
             res = pybobyqa.solve(
                 objective,
-                x0=np.asfarray(x_0),
+                x0=np.asarray(x_0, dtype=float),
                 bounds=bounds,
                 rhobeg=self.rhobeg,
                 rhoend=self.rhoend,
@@ -92,7 +104,7 @@ class Bobyqa(Optimizer, coi.Configurable):
             if res.flag < 0:
                 raise BobyqaException(res.msg)
             return OptimizeResult(
-                x=np.asfarray(res.x),
+                x=np.asarray(res.x, dtype=float),
                 fun=float(res.f),
                 success=res.flag == res.EXIT_SUCCESS,
                 message=res.msg,
@@ -102,6 +114,7 @@ class Bobyqa(Optimizer, coi.Configurable):
 
         return solve
 
+    @override
     def get_config(self) -> coi.Config:
         config = coi.Config()
         config.add(
@@ -140,6 +153,7 @@ class Bobyqa(Optimizer, coi.Configurable):
         )
         return config
 
+    @override
     def apply_config(self, values: coi.ConfigValues) -> None:
         self.maxfun = values.maxfun
         self.rhobeg = values.rhobeg

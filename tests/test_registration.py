@@ -20,7 +20,7 @@ def opt_class() -> type[_reg.Optimizer]:
 
 
 @pytest.fixture
-def entry_point(opt_class: t.Type[_reg.Optimizer]) -> metadata.EntryPoint:
+def entry_point(opt_class: type[_reg.Optimizer]) -> metadata.EntryPoint:
     # None of the attributes that we pass to `EntryPoint` will be used
     # in `res`. We only pass real strings to avoid assertion errors
     # while `Mock` iterates over `vars(spec_ep)`.
@@ -66,7 +66,7 @@ def test_spec_from_optimizer_with_dist() -> None:
 
 
 @pytest.mark.parametrize(
-    "do_dist, do_load, string",
+    ("do_dist", "do_load", "string"),
     [
         (False, False, "<OptimizerSpec('name', 'package:Class')>"),
         (False, True, "<OptimizerSpec('name', <class 'abc.MockOptimizer'>)>"),
@@ -149,9 +149,11 @@ def test_func_spec() -> None:
 
 
 def test_func_spec_with_bad_name() -> None:
-    with patch("cernml.optimizers._registration.registry", {}):
-        with pytest.raises(_reg.OptimizerNotFound):
-            _reg.spec(Mock())
+    with (
+        patch("cernml.optimizers._registration.registry", {}),
+        pytest.raises(_reg.OptimizerNotFound),
+    ):
+        _reg.spec(Mock())
 
 
 def test_func_make() -> None:

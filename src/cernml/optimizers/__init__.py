@@ -39,11 +39,11 @@ from ._registration import (
 )
 from ._solvefunc import make_solve_func, solve
 
-__all__ = [
+__all__ = (
+    "EP_GROUP",
     "AnyOptimizer",
     "Bounds",
     "DuplicateOptimizerWarning",
-    "EP_GROUP",
     "IgnoredArgumentWarning",
     "Objective",
     "OptimizeResult",
@@ -59,4 +59,4 @@ __all__ = [
     "registry",
     "solve",
     "spec",
-]
+)

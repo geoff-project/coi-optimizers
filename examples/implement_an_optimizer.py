@@ -5,6 +5,9 @@
 
 """Example for how to write an optimizer and register it."""
 
+from __future__ import annotations
+
+import sys
 import typing as t
 
 import click
@@ -22,6 +25,11 @@ from cernml.optimizers import (
     make,
     register,
 )
+
+if sys.version_info < (3, 12):
+    from typing_extensions import override
+else:
+    from typing import override
 
 
 class RandomSearchOptimizer(Optimizer, Configurable):
@@ -70,12 +78,15 @@ class RandomSearchOptimizer(Optimizer, Configurable):
         config = self.get_config()
         self.apply_config(config.validate_all(config.get_field_values()))
 
+    @override
     def get_config(self) -> Config:
         return Config().add("maxfun", self.maxfun, range=(0, 1_000_000))
 
+    @override
     def apply_config(self, values: ConfigValues) -> None:
         self.maxfun = values.maxfun
 
+    @override
     def make_solve_func(
         self,
         bounds: Bounds,

@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import sys
 import typing as t
 import warnings
 
@@ -25,11 +26,17 @@ from ._interface import (
     Solve,
 )
 
-__all__ = [
+if sys.version_info < (3, 12):
+    from typing_extensions import override
+else:
+    from typing import override
+
+
+__all__ = (
     "Cobyla",
     "NelderMeadSimplex",
     "Powell",
-]
+)
 
 
 class Cobyla(Optimizer, coi.Configurable):
@@ -56,6 +63,7 @@ class Cobyla(Optimizer, coi.Configurable):
         config = self.get_config()
         self.apply_config(config.validate_all(config.get_field_values()))
 
+    @override
     def make_solve_func(
         self, bounds: Bounds, constraints: t.Sequence[coi.Constraint]
     ) -> Solve:
@@ -78,7 +86,7 @@ class Cobyla(Optimizer, coi.Configurable):
                 },
             )
             return OptimizeResult(
-                x=np.asfarray(res.x),
+                x=np.asarray(res.x, dtype=float),
                 fun=float(res.fun),
                 success=res.success,
                 message=res.message,
@@ -88,6 +96,7 @@ class Cobyla(Optimizer, coi.Configurable):
 
         return solve
 
+    @override
     def get_config(self) -> coi.Config:
         config = coi.Config()
         config.add(
@@ -110,6 +119,7 @@ class Cobyla(Optimizer, coi.Configurable):
         )
         return config
 
+    @override
     def apply_config(self, values: coi.ConfigValues) -> None:
         self.maxfun = values.maxfun
         self.rhobeg = values.rhobeg
@@ -160,6 +170,7 @@ class NelderMeadSimplex(Optimizer, coi.Configurable):
         config = self.get_config()
         self.apply_config(config.validate_all(config.get_field_values()))
 
+    @override
     def make_solve_func(
         self,
         bounds: Bounds,
@@ -167,7 +178,9 @@ class NelderMeadSimplex(Optimizer, coi.Configurable):
     ) -> Solve:
         if constraints:
             warnings.warn(
-                "NelderMeadSimplex ignores constraints", IgnoredArgumentWarning
+                "NelderMeadSimplex ignores constraints",
+                category=IgnoredArgumentWarning,
+                stacklevel=2,
             )
 
         def solve(objective: Objective, x_0: NDArray[np.floating]) -> OptimizeResult:
@@ -184,7 +197,7 @@ class NelderMeadSimplex(Optimizer, coi.Configurable):
                 },
             )
             return OptimizeResult(
-                x=np.asfarray(res.x),
+                x=np.asarray(res.x, dtype=float),
                 fun=float(res.fun),
                 success=res.success,
                 message=res.message,
@@ -194,6 +207,7 @@ class NelderMeadSimplex(Optimizer, coi.Configurable):
 
         return solve
 
+    @override
     def get_config(self) -> coi.Config:
         config = coi.Config()
         config.add(
@@ -229,6 +243,7 @@ class NelderMeadSimplex(Optimizer, coi.Configurable):
         )
         return config
 
+    @override
     def apply_config(self, values: coi.ConfigValues) -> None:
         self.maxfun = values.maxfun
         self.adaptive = values.adaptive
@@ -286,13 +301,18 @@ class Powell(Optimizer, coi.Configurable):
         config = self.get_config()
         self.apply_config(config.validate_all(config.get_field_values()))
 
+    @override
     def make_solve_func(
         self,
         bounds: Bounds,
         constraints: t.Sequence[coi.Constraint],
     ) -> Solve:
         if constraints:
-            warnings.warn("Powell ignores constraints", IgnoredArgumentWarning)
+            warnings.warn(
+                "Powell ignores constraints",
+                category=IgnoredArgumentWarning,
+                stacklevel=2,
+            )
 
         def solve(objective: Objective, x_0: NDArray[np.floating]) -> OptimizeResult:
             res = scipy.optimize.minimize(
@@ -308,7 +328,7 @@ class Powell(Optimizer, coi.Configurable):
                 },
             )
             return OptimizeResult(
-                x=np.asfarray(res.x),
+                x=np.asarray(res.x, dtype=float),
                 fun=float(res.fun),
                 success=res.success,
                 message=res.message,
@@ -318,6 +338,7 @@ class Powell(Optimizer, coi.Configurable):
 
         return solve
 
+    @override
     def get_config(self) -> coi.Config:
         config = coi.Config()
         config.add(
@@ -345,6 +366,7 @@ class Powell(Optimizer, coi.Configurable):
         )
         return config
 
+    @override
     def apply_config(self, values: coi.ConfigValues) -> None:
         self.maxfun = values.maxfun
         self.tolerance = values.tolerance

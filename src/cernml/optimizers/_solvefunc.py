@@ -21,10 +21,10 @@ if t.TYPE_CHECKING:
         from gym import spaces  # type: ignore[no-redef]
 
 
-__all__ = [
+__all__ = (
     "make_solve_func",
     "solve",
-]
+)
 
 
 @t.overload

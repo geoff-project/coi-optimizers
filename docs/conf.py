@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import inspect
 import pathlib
+import sys
 import typing as t
 from importlib import import_module
 
@@ -29,12 +30,10 @@ from docutils import nodes
 from sphinx import addnodes
 from sphinx.ext import intersphinx
 
-try:
-    import importlib_metadata
-except ImportError:
-    # Starting with Python 3.10 (see pyproject.toml).
-    # pylint: disable = ungrouped-imports
-    import importlib.metadata as importlib_metadata  # type: ignore
+if sys.version_info < (3, 10):
+    import importlib_metadata as metadata
+else:
+    from importlib import metadata
 
 if t.TYPE_CHECKING:
     # pylint: disable = unused-import
@@ -48,7 +47,7 @@ ROOTDIR = pathlib.Path(__file__).absolute().parent.parent
 # -- Project information -----------------------------------------------
 
 project = "cernml-coi-optimizers"
-dist = importlib_metadata.distribution(project)
+dist = metadata.distribution(project)
 
 copyright = "2023-2024 GSI Helmholtzzentrum für Schwerionenforschung"
 author = "Nico Madysa"
@@ -210,7 +209,7 @@ def retry_internal_xref(
     env: BuildEnvironment,
     node: addnodes.pending_xref,
     contnode: nodes.TextElement,
-) -> t.Optional[nodes.reference]:
+) -> nodes.reference | None:
     """Retry a failed Python reference with laxer requirements.
 
     Autodoc often tries to look up type aliases as classes even though
@@ -228,7 +227,7 @@ def adjust_pending_xref(
     **kwargs: t.Any,
 ) -> t.Callable[
     [Sphinx, BuildEnvironment, addnodes.pending_xref, nodes.TextElement],
-    t.Optional[nodes.reference],
+    nodes.reference | None,
 ]:
     """Return a function that can fix a certain broken cross reference.
 
@@ -249,7 +248,7 @@ def adjust_pending_xref(
         env: BuildEnvironment,
         node: addnodes.pending_xref,
         contnode: nodes.TextElement,
-    ) -> t.Optional[nodes.reference]:
+    ) -> nodes.reference | None:
         node.update_all_atts(kwargs, replace=True)
         res = intersphinx.missing_reference(app, env, node, contnode)
         if res:
@@ -297,7 +296,7 @@ def fix_all_crossrefs(
     env: BuildEnvironment,
     node: addnodes.pending_xref,
     contnode: nodes.TextElement,
-) -> t.Optional[nodes.Element]:
+) -> nodes.Element | None:
     """Handler for all missing references."""
     fixer = crossref_fixers.get(node["reftarget"])
     if fixer:

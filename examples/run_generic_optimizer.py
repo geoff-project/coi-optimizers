@@ -5,7 +5,10 @@
 
 """Example of how to configure and run an optimizer generically."""
 
+from __future__ import annotations
+
 import dataclasses
+import sys
 import typing as t
 import warnings
 
@@ -15,6 +18,11 @@ from gymnasium.spaces import Box
 from numpy.typing import NDArray
 
 from cernml import coi, optimizers
+
+if sys.version_info < (3, 12):
+    from typing_extensions import override
+else:
+    from typing import override
 
 
 class ConvexToyProblem(coi.SingleOptimizable):
@@ -27,20 +35,22 @@ class ConvexToyProblem(coi.SingleOptimizable):
 
     optimization_space = Box(-1.0, 1.0, shape=[3], dtype=np.double)
 
+    @override
     def get_initial_params(
         self, *, seed: int | None = None, options: dict[str, t.Any] | None = None
     ) -> NDArray:
         super().get_initial_params(seed=seed, options=options)
         return np.array([0.1, 0.2, 0.0])
 
+    @override
     def compute_single_objective(self, params: NDArray) -> float:
         return float(np.linalg.norm(params))
 
 
 def apply_config(
     optimizer: optimizers.AnyOptimizer,
-    nfev: t.Optional[int] = None,
-    extra_config: t.Optional[dict[str, str]] = None,
+    nfev: int | None = None,
+    extra_config: dict[str, str] | None = None,
 ) -> optimizers.AnyOptimizer:
     """Apply all config options to the given optimizer.
 
@@ -59,7 +69,7 @@ def apply_config(
     """
     # Not every optimizer is configurable. Check that!
     if not isinstance(optimizer, coi.Configurable):
-        warnings.warn(f"Not configurable: {optimizer!r}")
+        warnings.warn(f"Not configurable: {optimizer!r}", stacklevel=2)
         return optimizer
     # These are all the values we want to change by default. Not all of
     # them are known to all optimizers.
@@ -81,7 +91,7 @@ def apply_config(
     # unknown to the optimizer.
     for name, value in (extra_config or {}).items():
         if name not in raw_values:
-            warnings.warn(f"ignoring unknown config: {name}")
+            warnings.warn(f"ignoring unknown config: {name}", stacklevel=2)
             continue
         raw_values[name] = value if value.lower() != "false" else ""
     optimizer.apply_config(config.validate_all(t.cast(dict, raw_values)))
@@ -143,7 +153,7 @@ def show_opt_result(
 @click.argument("extra_config", metavar="CONFIG=VALUE...", nargs=-1)
 def main(
     optimizer: str = "BOBYQA",
-    nfev: t.Optional[int] = None,
+    nfev: int | None = None,
     no_run: bool = False,
     extra_config: tuple[str, ...] = (),
 ) -> None:

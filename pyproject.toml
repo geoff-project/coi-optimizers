@@ -50,13 +50,13 @@ gitlab = 'https://gitlab.cern.ch/geoff/cerml-coi-optimizers'
 [project.optional-dependencies]
 bobyqa = ['Py-BOBYQA ~= 1.2']
 cernml-es = ['cernml-extremum-seeking >= 3.0, < 5']
-scipy = ['scipy ~= 1.1']
+scipy = ['scipy >= 1.1']
 skopt = ['scikit-optimize ~= 0.9.0']
 all = ['cernml-coi-optimizers[bobyqa,cernml-es,scipy,skopt]']
 examples = [
     'cernml-coi-optimizers[all]',
     'gymnasium < 2',
-    'click ~= 8.0',
+    'click >= 8.0',
 ]
 test = [
     'cernml-coi-optimizers[all]',
@@ -95,6 +95,40 @@ target-version = ['py39']
 profile = 'black'
 known_first_party = ['cernml']
 
+[tool.ruff]
+fix = true
+src = ['examples', 'src', 'test']
+target-version = 'py39'
+
+[tool.ruff.lint]
+# Missing warnings:
+# D* not raised in _*.py: https://github.com/astral-sh/ruff/issues/9561
+extend-select = [
+    'A', 'ARG', 'ASYNC', 'B', 'C4', 'C90', 'COM818', 'D', 'DTZ', 'EXE', 'FLY',
+    'I', 'ICN', 'ISC', 'NPY', 'PD', 'PERF', 'PGH', 'PIE', 'PLR5501', 'PT',
+    'PTH', 'PYI', 'RET', 'RSE', 'RUF', 'SIM', 'SLOT', 'T10', 'TD003', 'TRY',
+    'UP',
+]
+ignore = [
+    'D105',   # Missing docstring in magic method
+    'D107',   # Missing docstring in __init__
+    'D417',   # Missing argument description in the docstring
+    'ISC001', # Implicit string concatenation, conflicts with autoformat
+    'RUF012', # Mutable class attributes should use `typing.ClassVar`
+              # TODO Waiting for Gymnasium#951 to get fixed.
+    'TRY003', # Avoid specifying long messages outside the exception class
+]
+# Allow non-breaking space and en-dash in docstrings.
+allowed-confusables = [' ', '–', '×']
+flake8-pytest-style.fixture-parentheses = false
+isort.split-on-trailing-comma = true
+pycodestyle.max-doc-length = 72
+pydocstyle.convention = 'google'
+pydocstyle.ignore-decorators = ['overload', 'overrides']
+
+[tool.ruff.lint.per-file-ignores]
+'**/{tests,docs}/*' = ['A001', 'ARG', 'D', 'INP']
+
 [tool.pytest.ini_options]
 addopts = '--doctest-modules --doctest-glob="*.rst" --ignore=docs/conf.py'
 testpaths = ['src', 'tests', 'docs']
@@ -106,22 +140,20 @@ branch = true
 
 [tool.coverage.report]
 exclude_also = [
-    '^\s*from .* import',
-    '^\s*import ',
-    'if \w*\.TYPE_CHECKING',
-    '^\s*\.\.\.$',
-    'raise NotImplementedError',
     '^\s*@(t\w*\.)?overload$',
+    '^\s*except ImportError:$',
+    '^\s*from .* import',
+    '^\s*if .*\.TYPE_CHECKING:$',
+    '^\s*if sys\.version_info ..? \(\d, \d+\):$',
+    '^\s*import ',
+    '^\s*raise NotImplementedError',
 ]
 
-[tool.pylint.main]
-ignore-patterns = ['.*\.pyi$', 'test_.*\.py$']
-
-[tool.pylint.format]
-ignore-long-lines = '<?https?://\S+>?$'
-
-[tool.pylint.'messages control']
-disable = [
+[tool.pylint]
+main.ignore-paths = ['docs']
+main.ignore-patterns = ['.*\.pyi$', 'test_.*\.py$']
+format.ignore-long-lines = '<?https?://\S+>?$'
+'messages control'.disable = [
     'fixme',
     'similarities',
     'too-many-arguments',
@@ -134,6 +166,7 @@ mypy_path = '$MYPY_CONFIG_FILE_DIR/src'
 
 [[tool.mypy.overrides]]
 module = [
+    'gym.*',
     'pybobyqa.*',
     'scipy.*',
     'skopt.*',
