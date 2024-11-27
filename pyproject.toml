@@ -155,8 +155,11 @@ main.ignore-patterns = ['.*\.pyi$', 'test_.*\.py$']
 format.ignore-long-lines = '<?https?://\S+>?$'
 'messages control'.disable = [
     'fixme',
+    'import-outside-toplevel',
     'similarities',
+    'too-few-public-methods',
     'too-many-arguments',
+    'too-many-instance-attributes',
 ]
 
 [tool.mypy]

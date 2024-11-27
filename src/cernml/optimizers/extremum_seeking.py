@@ -37,8 +37,6 @@ __all__ = ("ExtremumSeeking",)
 class ExtremumSeeking(Optimizer, coi.Configurable):
     """Wrapper around an `~cernml.extremum_seeking.ExtremumSeeker`."""
 
-    # pylint: disable = too-many-instance-attributes
-
     def __init__(
         self,
         *,

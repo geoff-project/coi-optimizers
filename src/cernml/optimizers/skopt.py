@@ -38,8 +38,6 @@ __all__ = ("SkoptBayesian",)
 class SkoptBayesian(Optimizer, coi.Configurable):
     """Adapter for Bayesian optimization via scikit-optimize."""
 
-    # pylint: disable = too-many-instance-attributes
-
     def __init__(
         self,
         *,

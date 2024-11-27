@@ -32,7 +32,6 @@ def entry_point(opt_class: type[_reg.Optimizer]) -> metadata.EntryPoint:
 
 def test_optimizer_with_spec_cannot_be_instantiated() -> None:
     class _BadSubclass(_reg.OptimizerWithSpec):
-        # pylint: disable = too-few-public-methods
         def make_solve_func(self, bounds: t.Any, constraints: t.Any) -> t.NoReturn:
             raise NotImplementedError("mock")
 
@@ -105,7 +104,6 @@ def test_spec_load_caches(entry_point: metadata.EntryPoint) -> None:
 
 
 def test_spec_load_is_noop_with_class(opt_class: type[_reg.Optimizer]) -> None:
-    # pylint: disable = protected-access
     name = Mock(spec=str)
     spec = _reg.OptimizerSpec.from_optimizer(name, opt_class)
     spec._ep = Mock()

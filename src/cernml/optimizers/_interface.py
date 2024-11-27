@@ -14,7 +14,6 @@ import typing as t
 import numpy as np
 
 if t.TYPE_CHECKING:
-    # pylint: disable = unused-import, ungrouped-imports
     import sys
 
     if sys.version_info < (3, 10):
@@ -106,7 +105,7 @@ class OptimizeResult:
         nfev: The number of evaluations of the objective function.
     """
 
-    x: NDArray[np.double]  # pylint: disable=invalid-name
+    x: NDArray[np.double]
     fun: float
     success: bool
     message: str
@@ -165,8 +164,6 @@ class Optimizer(abc.ABC):
         spec: This optimizer's entry in the `registry` if it was created
             via `make()`, otherwise `std:None`.
     """
-
-    # pylint: disable = too-few-public-methods
 
     spec: OptimizerSpec | None = None
 

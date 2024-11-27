@@ -17,7 +17,6 @@ from cernml.optimizers import Bounds, Objective, Optimizer, Solve, solve
 
 def test_abstract_method_raises() -> None:
     class Impl(Optimizer):
-        # pylint: disable = useless-parent-delegation
         def make_solve_func(
             self, bounds: Bounds, constraints: t.Sequence[Constraint]
         ) -> Solve:

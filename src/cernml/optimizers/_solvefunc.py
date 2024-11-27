@@ -142,7 +142,6 @@ def _flatten_space(space: spaces.Space) -> spaces.Box:
     the result of `flatten_space()` is not a `Box` and raise
     a `TypeError` in such a case.
     """
-    # pylint: disable = import-outside-toplevel
     try:
         from gymnasium import spaces
     except ImportError:
@@ -151,9 +150,8 @@ def _flatten_space(space: spaces.Space) -> spaces.Box:
     if not getattr(space, "is_np_flattenable", True):
         raise TypeError(f"space cannot be flattened: {space!r}")
     space_type = type(space)
-    # pylint: disable = unnecessary-dunder-call
-    module_name: t.Any = vars(type)["__module__"].__get__(space_type)
-    space_name: str = vars(type)["__name__"].__get__(space_type)
+    module_name = space_type.__module__
+    space_name = space_type.__name__
     if str.startswith(module_name, "gym.spaces.") and str.istitle(space_name):
         # Compatibility shim for old Gym package.
         gymnasium_class: type[spaces.Space] = getattr(spaces, space_name)
