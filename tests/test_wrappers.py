@@ -131,7 +131,10 @@ def test_skopt_bad_num_calls() -> None:
 
 
 def test_gym_compatibility_shim(problem: coi.SingleOptimizable) -> None:
-    import gym  # type: ignore[import-untyped]
+    try:
+        import gym  # type: ignore[import-untyped]
+    except AttributeError:
+        pytest.skip("gym incompatible with installed version of importlib_metadata")
 
     space = gym.spaces.Box(-12.0, 12.0, shape=[3, 2, 1], dtype=np.double)
     problem.optimization_space = t.cast(Box, space)
