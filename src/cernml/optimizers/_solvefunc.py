@@ -10,7 +10,7 @@ from __future__ import annotations
 import typing as t
 from functools import partial
 
-from cernml.coi import FunctionOptimizable, SingleOptimizable
+from cernml import coi
 
 from ._interface import Optimizer, OptimizeResult, Solve
 
@@ -28,18 +28,18 @@ __all__ = (
 
 
 @t.overload
-def make_solve_func(optimizer: Optimizer, problem: SingleOptimizable) -> Solve: ...
+def make_solve_func(optimizer: Optimizer, problem: coi.SingleOptimizable) -> Solve: ...
 
 
 @t.overload
 def make_solve_func(
-    optimizer: Optimizer, problem: FunctionOptimizable, cycle_time: float
+    optimizer: Optimizer, problem: coi.FunctionOptimizable, cycle_time: float
 ) -> Solve: ...
 
 
 def make_solve_func(
     optimizer: Optimizer,
-    problem: SingleOptimizable | FunctionOptimizable,
+    problem: coi.SingleOptimizable | coi.FunctionOptimizable,
     cycle_time: float | None = None,
 ) -> Solve:
     """Create a new solve function.
@@ -61,13 +61,13 @@ def make_solve_func(
         The `Solve` function.
     """
     if cycle_time is None:
-        if not isinstance(problem, SingleOptimizable):
+        if not coi.is_single_optimizable(problem):
             raise TypeError(f"not a SingleOptimizable: {problem!r}")
         space = _flatten_space(problem.optimization_space)
         bounds = (space.low, space.high)
         constraints = problem.constraints
         return optimizer.make_solve_func(bounds, constraints)
-    if not isinstance(problem, FunctionOptimizable):
+    if not coi.is_function_optimizable(problem):
         raise TypeError(
             f"passed a cycle time, but not a FunctionOptimizable: {problem!r}"
         )
@@ -78,18 +78,18 @@ def make_solve_func(
 
 
 @t.overload
-def solve(optimizer: Optimizer, problem: SingleOptimizable) -> OptimizeResult: ...
+def solve(optimizer: Optimizer, problem: coi.SingleOptimizable) -> OptimizeResult: ...
 
 
 @t.overload
 def solve(
-    optimizer: Optimizer, problem: FunctionOptimizable, cycle_time: float
+    optimizer: Optimizer, problem: coi.FunctionOptimizable, cycle_time: float
 ) -> OptimizeResult: ...
 
 
 def solve(
     optimizer: Optimizer,
-    problem: SingleOptimizable | FunctionOptimizable,
+    problem: coi.SingleOptimizable | coi.FunctionOptimizable,
     cycle_time: float | None = None,
 ) -> OptimizeResult:
     """Solve an optimization problem with the given optimizer.
@@ -113,14 +113,14 @@ def solve(
     if cycle_time is None:
         # If this cast is wrong, `make_solve_func()` will raise
         # TypeError.
-        problem = t.cast(SingleOptimizable, problem)
+        problem = t.cast(coi.SingleOptimizable, problem)
         solvefunc = make_solve_func(optimizer, problem)
         objective = problem.compute_single_objective
         initial_params = problem.get_initial_params()
         return solvefunc(objective, initial_params)
     # If this cast is wrong, `make_solve_func()` will raise
     # TypeError.
-    problem = t.cast(FunctionOptimizable, problem)
+    problem = t.cast(coi.FunctionOptimizable, problem)
     solvefunc = make_solve_func(optimizer, problem, cycle_time)
     objective = partial(problem.compute_function_objective, cycle_time)
     initial_params = problem.get_initial_params(cycle_time)

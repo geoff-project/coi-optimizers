@@ -68,7 +68,7 @@ def apply_config(
         *optimizer* after configuration.
     """
     # Not every optimizer is configurable. Check that!
-    if not isinstance(optimizer, coi.Configurable):
+    if not coi.is_configurable(optimizer):
         warnings.warn(f"Not configurable: {optimizer!r}", stacklevel=2)
         return optimizer
     # These are all the values we want to change by default. Not all of
@@ -95,7 +95,7 @@ def apply_config(
             continue
         raw_values[name] = value if value.lower() != "false" else ""
     optimizer.apply_config(config.validate_all(t.cast(dict, raw_values)))
-    return optimizer
+    return t.cast(optimizers.AnyOptimizer, optimizer)
 
 
 def _get_opt_name(opt: optimizers.Optimizer) -> str:
@@ -105,7 +105,7 @@ def _get_opt_name(opt: optimizers.Optimizer) -> str:
 def show_opt_config(opt: optimizers.OptimizerWithSpec) -> None:
     """Show the config of a given optimizer."""
     click.echo(f"Configs for optimizer {click.style(opt.spec.name, fg='blue')}:")
-    if not isinstance(opt, coi.Configurable):
+    if not coi.is_configurable(opt):
         click.echo("    <not configurable>")
         return
     for field in opt.get_config().fields():
