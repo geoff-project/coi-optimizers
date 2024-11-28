@@ -14,15 +14,18 @@ Unreleased
 
 No changes yet!
 
-v2.0.2
+v3.0.0
 ------
 
+- BREAKING: Drop support for :doc:`cernml-coi <coi:index>` v0.8. The biggest
+  change is that we now use the new :doc:`coi:api/typeguards` introduced with
+  v0.9.
 - FIX: Relax dependency on `numpy`.
 
 v2.0.1
 ------
 
-- FIX: Relax dependency on `cernml.coi`.
+- FIX: Relax dependency on the COI_.
 
 v2.0.0
 ------
