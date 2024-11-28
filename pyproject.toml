@@ -133,6 +133,9 @@ pydocstyle.ignore-decorators = ['overload', 'overrides']
 addopts = '--doctest-modules --doctest-glob="*.rst" --ignore=docs/conf.py'
 testpaths = ['src', 'tests', 'docs']
 doctest_optionflags = ['ELLIPSIS', 'IGNORE_EXCEPTION_DETAIL']
+markers = [
+    'optimizer: name of the algorithm to use by the `optimizer` fixture',
+]
 
 [tool.coverage.run]
 source = ['src/']
