@@ -44,6 +44,8 @@ def nfev(request: pytest.FixtureRequest) -> int:
             "NelderMeadSimplex": 4,
             "Powell": 43,
             "SkoptBayesian": 15,
+            "XoptBayesian": 15,
+            "XoptRcds": 15,
         }[name]
     except KeyError:
         request.raiseerror(f"invalid value for marker 'optimizer': {name!r}")
@@ -64,6 +66,7 @@ def optimizer(request: pytest.FixtureRequest) -> optimizers.Optimizer:
             "max_calls": 20,
             "n_calls": 15,
             "maxfun": 100,
+            "max_evaluations": 15,
             "check_convergence": True,
         }
         raw_values = {
@@ -101,6 +104,8 @@ def test_builtin_names() -> None:
         "NelderMeadSimplex",
         "Powell",
         "SkoptBayesian",
+        "XoptBayesian",
+        "XoptRcds",
     )
 
 
@@ -127,6 +132,7 @@ def test_run_optimizer(
     res = solve(problem.compute_single_objective, problem.get_initial_params())
     assert res.success
     assert res.nfev == nfev
+    assert problem.get_wrapper_attr("num_calls") == nfev
 
 
 @pytest.mark.parametrize(
@@ -139,7 +145,7 @@ def test_warn_ignored_constraints(optimizer: optimizers.Optimizer) -> None:
     constraint = LinearConstraint(np.diag(np.ones(3)), -1.0, 1.0)
     context = contextlib.ExitStack()
     assert optimizer.spec is not None
-    if optimizer.spec.name == "COBYLA":
+    if optimizer.spec.name in ("COBYLA", "XoptBayesian"):
         # COBYLA knows constraints, so it should not raise a warning.
         context.enter_context(warnings.catch_warnings())
         warnings.simplefilter("error")

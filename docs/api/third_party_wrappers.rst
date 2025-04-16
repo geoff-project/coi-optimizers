@@ -4,6 +4,8 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later OR EUPL-1.2+
 
+:tocdepth: 3
+
 Wrappers for Third-Party Packages
 =================================
 
@@ -45,3 +47,27 @@ CernML Extremum Seeking
    .. currentmodule:: cernml.optimizers.extremum_seeking
 
    .. autoclass:: ExtremumSeeking
+
+Xopt
+----
+
+.. automodule:: cernml.optimizers.xopt
+
+   .. currentmodule:: cernml.optimizers.xopt_rcds
+
+   .. autoclass:: XoptRcds
+   .. autoclass:: XoptBayesian
+   .. autoclass:: BaseXoptOptimizer
+      :members: make_generator
+
+Xopt configuration helpers
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+   The following enum classes serve to further configure `XoptBayesian`:
+
+   .. autoclass:: BayesianMethod
+      :members:
+      :exclude-members: get_generator
+   .. autoclass:: TurboController
+      :members:
+      :exclude-members: get_controller

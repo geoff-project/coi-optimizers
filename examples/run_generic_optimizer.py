@@ -80,6 +80,7 @@ def apply_config(
         "n_calls": nfev or 15,
         "maxfun": nfev or 100,
         "check_convergence": True,
+        "max_evaluations": nfev or 100,
     }
     # Acquire the optimizer's presets. If we have an override for any of
     # them, use it instead.
