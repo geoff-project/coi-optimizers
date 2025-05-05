@@ -17,16 +17,16 @@ import numpy as np
 if t.TYPE_CHECKING:
     import sys
 
-    if sys.version_info < (3, 10):
-        from typing_extensions import TypeAlias
-    else:
-        from typing import TypeAlias
-
     from numpy.typing import NDArray
 
     from cernml.coi import Constraint
 
     from ._registration import OptimizerSpec
+
+    if sys.version_info < (3, 10):
+        from typing_extensions import TypeAlias
+    else:
+        from typing import TypeAlias
 
 
 __all__ = (
