@@ -33,7 +33,7 @@ project = "cernml-coi-optimizers"
 dist = metadata.distribution(project)
 
 copyright = "2023-2025 GSI Helmholtzzentrum für Schwerionenforschung"
-author = "Nico Madysa"
+author = "Penny Madysa"
 release = dist.version
 version = release.partition("+")[0]
 
