@@ -14,8 +14,6 @@ SciPy
 
 .. automodule:: cernml.optimizers.scipy
 
-   .. currentmodule:: cernml.optimizers.scipy
-
    .. autoclass:: Cobyla
    .. autoclass:: NelderMeadSimplex
    .. autoclass:: Powell
@@ -25,16 +23,12 @@ Scikit-Optimize
 
 .. automodule:: cernml.optimizers.skopt
 
-   .. currentmodule:: cernml.optimizers.skopt
-
    .. autoclass:: SkoptBayesian
 
 Py-BOBYQA
 ---------
 
 .. automodule:: cernml.optimizers.bobyqa
-
-   .. currentmodule:: cernml.optimizers.bobyqa
 
    .. autoclass:: Bobyqa
    .. autoexception:: BobyqaException
@@ -44,16 +38,12 @@ CernML Extremum Seeking
 
 .. automodule:: cernml.optimizers.extremum_seeking
 
-   .. currentmodule:: cernml.optimizers.extremum_seeking
-
    .. autoclass:: ExtremumSeeking
 
 Xopt
 ----
 
 .. automodule:: cernml.optimizers.xopt
-
-   .. currentmodule:: cernml.optimizers.xopt_rcds
 
    .. autoclass:: XoptRcds
    .. autoclass:: XoptBayesian
