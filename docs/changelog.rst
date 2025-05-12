@@ -12,7 +12,8 @@ Changelog
 Unreleased
 ----------
 
-No changes yet!
+- FIX: :doc:`SciPy wrappers <api/third_party_wrappers>` erroneously returned a
+  `numpy.bool` instead of a `bool` in `OptimizeResult.success`.
 
 v3.0.0
 ------

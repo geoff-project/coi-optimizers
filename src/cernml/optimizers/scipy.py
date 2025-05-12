@@ -89,7 +89,7 @@ class Cobyla(Optimizer, coi.Configurable):
             return OptimizeResult(
                 x=np.asarray(res.x, dtype=float),
                 fun=float(res.fun),
-                success=res.success,
+                success=bool(res.success),
                 message=res.message,
                 nit=res.nfev,
                 nfev=res.nfev,
@@ -200,7 +200,7 @@ class NelderMeadSimplex(Optimizer, coi.Configurable):
             return OptimizeResult(
                 x=np.asarray(res.x, dtype=float),
                 fun=float(res.fun),
-                success=res.success,
+                success=bool(res.success),
                 message=res.message,
                 nit=res.nit,
                 nfev=res.nfev,
@@ -331,7 +331,7 @@ class Powell(Optimizer, coi.Configurable):
             return OptimizeResult(
                 x=np.asarray(res.x, dtype=float),
                 fun=float(res.fun),
-                success=res.success,
+                success=bool(res.success),
                 message=res.message,
                 nit=res.nit,
                 nfev=res.nfev,
