@@ -48,19 +48,19 @@ def test_spec_from_entry_point(entry_point: metadata.EntryPoint) -> None:
 
 
 def test_spec_from_optimizer() -> None:
-    name = Mock()
-    opt = MagicMock()
-    opt.__qualname__ = "<locals>.MockOptimizer"
+    name = Mock(name="name")
+    opt = MagicMock(name="Optimizer")
+    opt.__qualname__ = "locals.MockOptimizer"
     spec = _reg.OptimizerSpec.from_optimizer(name, opt)
     assert spec.name == name
-    assert spec.value == "unittest.mock:<locals>.MockOptimizer"
+    assert spec.value == "unittest.mock:locals.MockOptimizer"
     assert spec.dist is None
 
 
 def test_spec_from_optimizer_with_dist() -> None:
-    name = Mock()
-    opt = MagicMock(__qualname__="<locals>.MockOptimizer")
-    dist = Mock()
+    name = Mock(name="name")
+    opt = MagicMock(name="Optimizer", __qualname__="locals.MockOptimizer")
+    dist = Mock(name="dist")
     spec = _reg.OptimizerSpec.from_optimizer(name, opt, dist)
     assert spec.dist is dist
 
@@ -152,11 +152,11 @@ def test_func_spec_with_bad_name() -> None:
         patch("cernml.optimizers._registration.registry", {}),
         pytest.raises(_reg.OptimizerNotFound),
     ):
-        _reg.spec(Mock())
+        _reg.spec(Mock(name="name"))
 
 
 def test_func_make() -> None:
-    name = Mock()
+    name = Mock(name="name")
     with patch("cernml.optimizers._registration.spec") as spec:
         opt = _reg.make(name)
     spec.assert_called_with(name)
@@ -164,9 +164,9 @@ def test_func_make() -> None:
 
 
 def test_register_with_str() -> None:
-    name = Mock(spec=str)
-    value = Mock(spec=str)
-    dist = Mock(spec=metadata.Distribution)
+    name = "mock_name"
+    value = "mock_value"
+    dist = Mock(name="dist", spec=metadata.Distribution)
     registry: dict[str, _reg.OptimizerSpec] = {}
     with patch("cernml.optimizers._registration.registry", registry):
         _reg.register(name, value, dist)
@@ -177,8 +177,8 @@ def test_register_with_str() -> None:
 
 
 def test_register_with_class(opt_class: type[_reg.Optimizer]) -> None:
-    name = Mock(spec=str)
-    dist = Mock(spec=metadata.Distribution)
+    name = "mock_name"
+    dist = Mock(name="dist", spec=metadata.Distribution)
     registry: dict[str, _reg.OptimizerSpec] = {}
     with patch("cernml.optimizers._registration.registry", registry):
         _reg.register(name, opt_class, dist)
@@ -189,16 +189,16 @@ def test_register_with_class(opt_class: type[_reg.Optimizer]) -> None:
 
 
 def test_register_with_bad_arg() -> None:
-    name = Mock(spec=str)
-    opt_class = NonCallableMock()
+    name = "mock_name"
+    opt_class = NonCallableMock(name="opt_class")
     with pytest.raises(TypeError, match="must be a string or an Optimizer subclass"):
         _reg.register(name, opt_class)
 
 
 def test_register_twice() -> None:
-    name = Mock(spec=str)
-    old_value = Mock(spec=str)
-    new_value = Mock(spec=str)
+    name = "mock_name"
+    old_value = "mock_old_value"
+    new_value = "mock_new_value"
     registry: dict[str, _reg.OptimizerSpec] = {}
     with patch("cernml.optimizers._registration.registry", registry):
         _reg.register(name, old_value)

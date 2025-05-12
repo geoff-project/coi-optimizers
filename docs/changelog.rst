@@ -14,6 +14,8 @@ Unreleased
 
 - FIX: :doc:`SciPy wrappers <api/third_party_wrappers>` erroneously returned a
   `numpy.bool` instead of a `bool` in `OptimizeResult.success`.
+- FIX: Tests failed on Python 3.9 and any modern :doc:`importlib-metadata
+  <imp:index>`.
 
 v3.0.0
 ------
