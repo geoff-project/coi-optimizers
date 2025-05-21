@@ -152,16 +152,29 @@ def test_warn_ignored_constraints(optimizer: optimizers.Optimizer) -> None:
 
 
 @pytest.mark.optimizer("BOBYQA")
+@pytest.mark.parametrize(
+    ("low", "high"), [(-np.ones(3), np.ones(2)), (-np.ones(2), np.ones(3))]
+)
 def test_bad_bobyqa_bounds(
-    problem: coi.SingleOptimizable, optimizer: optimizers.Optimizer
+    optimizer: optimizers.Optimizer, low: NDArray[np.double], high: NDArray[np.double]
 ) -> None:
     from cernml.optimizers.bobyqa import BobyqaException
 
-    space = problem.optimization_space
-    assert isinstance(space, Box)
-    solve = optimizer.make_solve_func((space.low, space.high), problem.constraints)
+    solve = optimizer.make_solve_func((low, high), [])
+    with pytest.raises(BobyqaException, match="must have same shape as x0"):
+        solve(Mock(name="objective"), np.zeros(2))
+
+
+@pytest.mark.optimizer("BOBYQA")
+def test_bad_bobyqa_shapes(optimizer: optimizers.Optimizer) -> None:
+    from cernml.optimizers.bobyqa import BobyqaException
+
+    x0 = np.zeros((2, 2))
+    low = x0 - 1.0
+    high = x0 + 1.0
+    solve = optimizer.make_solve_func((low, high), [])
     with pytest.raises(BobyqaException):
-        solve(problem.compute_single_objective, np.zeros(2))
+        solve(Mock(name="objective"), x0)
 
 
 @pytest.mark.parametrize("field", ["gain", "oscillation_size", "decay_rate"])

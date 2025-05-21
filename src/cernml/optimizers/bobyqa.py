@@ -62,8 +62,8 @@ class Bobyqa(Optimizer, coi.Configurable):
         self,
         *,
         maxfun: int = 100,
-        rhobeg: float = 0.5,
-        rhoend: float = 0.05,
+        rhobeg: float = 0.25,
+        rhoend: float = 0.025,
         nsamples: int = 1,
         seek_global_minimum: bool = False,
         objfun_has_noise: bool = False,
@@ -92,6 +92,7 @@ class Bobyqa(Optimizer, coi.Configurable):
             )
 
         def solve(objective: Objective, x_0: NDArray[np.floating]) -> OptimizeResult:
+            _assert_bounds_shape(bounds, expected=np.shape(x_0))
             nsamples = self.nsamples
             res = pybobyqa.solve(
                 objective,
@@ -171,3 +172,15 @@ class Bobyqa(Optimizer, coi.Configurable):
         self.seek_global_minimum = values.seek_global_minimum
         self.objfun_has_noise = values.objfun_has_noise
         self.scaling_within_bounds = values.scaling_within_bounds
+
+
+def _assert_bounds_shape(bounds: Bounds, expected: tuple[int, ...]) -> None:
+    low, high = bounds
+    try:
+        np.broadcast_to(low, expected)
+    except ValueError as exc:
+        raise BobyqaException("lower bounds must have same shape as x0") from exc
+    try:
+        np.broadcast_to(high, expected)
+    except ValueError as exc:
+        raise BobyqaException("upper bounds must have same shape as x0") from exc

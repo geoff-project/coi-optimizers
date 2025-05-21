@@ -14,6 +14,10 @@ Unreleased
 
 - BREAKING: Add to `.Bobyqa` a new parameter *scaling_within_bounds* that is
   true by default. This changes the behavior of the optimizer!
+- BREAKING: Reduce the default values of `.Bobyqa`\ 's  parameters *rhobeg*
+  (to 0.25) and *rhoend* (to 0.025). This is motivated by the new
+  default option *scaling_within_bounds*, which scales parameters into the
+  interval [0; 1] instead of the conventional [−1; +1].
 - FIX: :doc:`SciPy wrappers <api/third_party_wrappers>` erroneously returned a
   `numpy.bool` instead of a `bool` in `OptimizeResult.success`.
 - FIX: Tests failed on Python 3.9 and any modern :doc:`importlib-metadata

@@ -61,14 +61,22 @@ The built-in wrappers are documented on the page
 :doc:`/api/registration` provided by this package:
 
     >>> from cernml.optimizers import make
-    >>> make("BOBYQA")  # doctest: +ELLIPSIS
+    >>> opt = make("BOBYQA")  # doctest: +ELLIPSIS
+    >>> opt # doctest: +ELLIPSIS
     <cernml.optimizers.bobyqa.Bobyqa object at ...>
 
 But you can also instantiate it directly:
 
     >>> from cernml.optimizers.bobyqa import Bobyqa
-    >>> Bobyqa()  # doctest: +ELLIPSIS
+    >>> opt = Bobyqa()
+    >>> opt # doctest: +ELLIPSIS
     <cernml.optimizers.bobyqa.Bobyqa object at ...>
+
+You can also configure it to your liking:
+
+    >>> opt.rhoend = 1e-8
+    >>> opt.rhobeg
+    0.25
 
 To optimize an optimization problem like the following:
 
@@ -79,7 +87,6 @@ To optimize an optimization problem like the following:
 
 you create a *solve function* and call it:
 
-    >>> opt = make("BOBYQA")
     >>> solve = opt.make_solve_func(bounds=(x0-2, x0+2), constraints=[])
     >>> result = solve(objective, x0)
 
@@ -90,7 +97,7 @@ optimization procedure:
     >>> print(result.message)
     Success: rho has reached rhoend
     >>> result.x
-    array([0.71053567, 0.7209604 ])
+    array([0.70710678, 0.70710678])
     >>> round(result.fun, 3)
     -0.5
 
