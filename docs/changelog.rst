@@ -12,6 +12,11 @@ Changelog
 Unreleased
 ----------
 
+No changes yet!
+
+v4.0.0
+------
+
 - BREAKING: Add to `.Bobyqa` a new parameter *scaling_within_bounds* that is
   true by default. This changes the behavior of the optimizer!
 - BREAKING: Reduce the default values of `.Bobyqa`\ 's  parameters *rhobeg*
