@@ -140,6 +140,7 @@ testpaths = ['src', 'tests', 'docs']
 doctest_optionflags = ['ELLIPSIS', 'IGNORE_EXCEPTION_DETAIL']
 markers = [
     'optimizer: name of the algorithm to use by the `optimizer` fixture',
+    'enable_constraints: add a constraint to the `problem` fixture',
 ]
 
 [tool.coverage.run]

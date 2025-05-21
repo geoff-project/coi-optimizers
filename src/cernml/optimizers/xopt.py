@@ -69,7 +69,7 @@ class BaseXoptOptimizer(Optimizer, coi.Configurable):
             )
         if max_evaluations <= 0:
             raise ValueError(f"invalid `max_evaluations`: {max_evaluations!r}")
-        if not 0 <= random_evaluations <= max_evaluations:
+        if not 0 <= random_evaluations < max_evaluations:
             raise ValueError(f"invalid `random_evaluations`: {random_evaluations!r}")
         self.max_evaluations = max_evaluations
         self.random_evaluations = random_evaluations
@@ -143,11 +143,7 @@ class BayesianMethod(enum.Enum):
     """Corresponds to the Xopt class
     `~xopt.generators.bayesian.expected_improvement.ExpectedImprovementGenerator`."""
 
-    BAYESIAN_EXPLORATION = "Bayesian exploration"
-    """Corresponds to the Xopt class
-    `~xopt.generators.bayesian.bayesian_exploration.BayesianExplorationGenerator`."""
-
-    def get_generator(self) -> type[xopt.Generator]:
+    def get_generator_class(self) -> type[xopt.Generator]:
         """Return the chosen generator class."""
         return xopt.generators.get_generator(self.name.lower())
 
@@ -166,10 +162,6 @@ class TurboController(enum.Enum):
     SAFETY = "Safety-constrained"
     """Corresponds to the Xopt class
     `~xopt.generators.bayesian.turbo.SafetyTurboController`."""
-
-    ENTROPY = "Entropy-based"
-    """Corresponds to the Xopt class
-    `~xopt.generators.bayesian.turbo.EntropyTurboController`."""
 
     def get_controller(
         self,
@@ -230,8 +222,7 @@ class XoptBayesian(BaseXoptOptimizer):
 
     @override
     def make_generator(self, vocs: xopt.VOCS) -> xopt.Generator:
-        method = self.method.name.lower()
-        gen_class = xopt.generators.get_generator(method)
+        gen_class = self.method.get_generator_class()
         max_travel_distances = (
             None
             if self.max_travel_distances is None
@@ -394,7 +385,7 @@ class XoptRcds(BaseXoptOptimizer):
                 category=IgnoredArgumentWarning,
                 stacklevel=2,
             )
-        return super().make_solve_func(bounds, constraints)
+        return super().make_solve_func(bounds, ())
 
     @override
     def get_config(self) -> coi.Config:
@@ -477,19 +468,23 @@ def _translate_constraints(
     """Helper for `get_vocs()`."""
     ConstraintEnum = xopt.vocs.ConstraintEnum
     result = {}
-    for i, c in enumerate(constraints, 1):
-        try:
-            lb = np.unique(c.lb).item()
-        except ValueError:
-            raise ValueError(f"Xopt requires scalar lower bounds: {c.lb!r}") from None
-        if not np.isneginf(lb):
-            result[f"c{i}-lb"] = (ConstraintEnum.GREATER_THAN, lb)
-        try:
-            ub = np.unique(c.ub).item()
-        except ValueError:
-            raise ValueError(f"Xopt requires scalar upper bounds: {c.ub!r}") from None
-        if not np.isposinf(ub):
-            result[f"c{i}-ub"] = (ConstraintEnum.LESS_THAN, ub)
+    for i_c, c in enumerate(constraints, 1):
+        shape = np.shape(c.lb)
+        assert shape == np.shape(c.ub), c
+        if not shape:
+            if not np.isneginf(c.lb):
+                result[f"c{i_c}-lb"] = (ConstraintEnum.GREATER_THAN, float(c.lb))
+            if not np.isposinf(c.ub):
+                result[f"c{i_c}-ub"] = (ConstraintEnum.LESS_THAN, float(c.ub))
+        elif len(shape) == 1:
+            for i_b, (lb, ub) in enumerate(zip(c.lb, c.ub), 1):
+                if not np.isneginf(lb):
+                    result[f"c{i_c}-lb{i_b}"] = (ConstraintEnum.GREATER_THAN, lb.item())
+                if not np.isposinf(ub):
+                    result[f"c{i_c}-ub{i_b}"] = (ConstraintEnum.LESS_THAN, ub.item())
+        else:
+            raise ValueError(f"constraints must be at most 1D, not {len(shape)}D")
+
     return result
 
 
@@ -505,25 +500,41 @@ def eval_constraints(
     # The code here should always have the same structure as
     # `_translate_constraints()`.
     result = {}
-    for i, c in enumerate(constraints, 1):
+    for i_c, c in enumerate(constraints, 1):
         value = _eval_constraint(c, params)
-        if not np.isneginf(c.lb):
-            result[f"c{i}-lb"] = value
-        if not np.isposinf(c.ub):
-            result[f"c{i}-ub"] = value
+        assert np.shape(value) == np.shape(c.lb), np.shape(value)
+        ndim = np.ndim(value)
+        if not ndim:
+            if not np.isneginf(c.lb):
+                result[f"c{i_c}-lb"] = float(value)
+            if not np.isposinf(c.ub):
+                result[f"c{i_c}-ub"] = float(value)
+        elif ndim == 1:
+            for i_b, (v, lb, ub) in enumerate(zip(value, c.lb, c.ub), 1):
+                if not np.isneginf(lb):
+                    result[f"c{i_c}-lb{i_b}"] = v.item()
+                if not np.isposinf(ub):
+                    result[f"c{i_c}-ub{i_b}"] = v.item()
+        else:
+            raise ValueError(f"constraints must be at most 1D, not {ndim}D")
     return result
 
 
-def _eval_constraint(constraint: coi.Constraint, params: NDArray[np.double]) -> float:
+def _eval_constraint(
+    constraint: coi.Constraint, params: NDArray[np.double]
+) -> NDArray[np.double]:
     """Helper for `eval_constraints()`."""
     # To support duck-typing and reduce dependency on SciPy, we check
     # for attributes here instead of instance checks. This is
     # technically superfluous because Xopt depends on SciPy.
     if callable(fun := getattr(constraint, "fun", None)):
-        return float(fun(params))
-    if (A := getattr(constraint, "A", None)) is not None:
-        return float(A @ params)
-    raise ValueError(f"constraint of unknown type: {constraint!r}")
+        return fun(params)
+    A: np.ndarray[tuple[int, int], np.dtype[np.double]] | None = getattr(
+        constraint, "A", None
+    )
+    if A is not None:
+        return A @ params
+    raise TypeError(f"constraint of unknown type: {constraint!r}")
 
 
 def make_objective_wrapper(
