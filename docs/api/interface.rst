@@ -26,8 +26,8 @@ Classes
 
 .. autoexception:: IgnoredArgumentWarning
 
-Type Aliases
-------------
+Type Aliases and Type Variables
+-------------------------------
 
 .. attribute:: Solve
     :type: typing.TypeAlias
@@ -65,3 +65,32 @@ Type Aliases
     This tuple describes the lower and upper search space bounds for those
     optimization algorithms that use such bounds. Both arrays must have the
     same shape.
+
+.. data:: AnyOptimizer
+    :type: typing.TypeVar
+
+    :ref:`Constrained type variable <std:typing-constrained-typevar>` that
+    allows to be generic over any `Optimizer`.
+
+    If you use a type checker, it allows code like this to pass:
+
+    .. code-block:: python
+
+        from cernml.optimizers import Optimizer, AnyOptimizer
+
+        class MyOptimizer(Optimizer):
+            ...
+
+        # If the annotation were just `Optimizer`, we
+        # would lose the `MyOptimizer` after this call.
+        def configure(opt: AnyOptimizer) -> AnyOptimizer:
+            ...
+            return opt
+
+        opt = configure(MyOptimizer())
+
+        # Type checker knows that `opt` is still a `MyOptimizer`.
+        def require_concrete(opt: MyOptimizer) -> None:
+            ...
+
+        require_concrete(opt)
