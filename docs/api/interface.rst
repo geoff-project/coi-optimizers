@@ -29,48 +29,41 @@ Classes
 Type Aliases and Type Variables
 -------------------------------
 
-.. attribute:: Solve
-    :type: typing.TypeAlias
+.. type:: Solve
+    :canonical: Callable[[Objective, NDArray[np.double]], OptimizeResult]
 
-    :ref:`Type alias <type-aliases>`  for functions with signature
-    (*obj*: `Objective`, *x0*: `~numpy.typing.NDArray`\ [`~numpy.double`])
-    → `OptimizeResult`.
+    The function returned by `~Optimizer.make_solve_func()`.
 
-    This is the function returned by `~Optimizer.make_solve_func()`. You have
-    to call it to actually run the optimization procedure. It may raise an
-    exception when encountering any abnormal situations except divergent
-    behavior in the optimizer. Any exception raised by the `~Objective` should
-    be forwarded as well.
+    To actually run the optimization procedure, you have to call this function
+    with the objective function and the initial value *x*\ ₀ as arguments. It
+    may raise an exception when encountering any abnormal situations **except**
+    divergent behavior in the optimizer. It should also forward exception
+    raised by the `~Objective` function.
 
-.. attribute:: Objective
-    :type: typing.TypeAlias
+.. type:: Objective
+    :canonical: Callable[[NDArray[np.double]], SupportsFloat]
 
-    :ref:`Type alias <type-aliases>` for functions with signature
-    (*x*: `~numpy.typing.NDArray`\ [`~numpy.double`])
-    → `~typing.SupportsFloat`.
+    The objective function that is passed to `Solve`.
 
-    This is the objective function that is passed to `Solve`. It takes an
-    evaluation point *x* of the same shape as the `Bounds` passed to
-    `~Optimizer.make_solve_func()` and returns the corresponding objective
-    value. The goal of optimization is to find the *x* that minimizes the
+    It takes an evaluation point *x* and returns the corresponding objective
+    value *f*\ (*x*). The point *x* must have the same shape as the `Bounds`
+    that were passed to `~Optimizer.make_solve_func()`
+
+    The goal of optimization is to find the *x* that minimizes the
     objective.
 
-.. attribute:: Bounds
-    :type: typing.TypeAlias
+.. type:: Bounds
+    :canonical: tuple[NDArray[np.floating], NDArray[np.floating]]
 
-    :ref:`Type alias <type-aliases>` of
-    `tuple`\ [`~numpy.typing.NDArray`\ [`~numpy.floating`],
-    `~numpy.typing.NDArray`\ [`~numpy.floating`].
-
-    This tuple describes the lower and upper search space bounds for those
+    This tuple describes the *lower* and *upper* search space bounds for those
     optimization algorithms that use such bounds. Both arrays must have the
     same shape.
 
-.. data:: AnyOptimizer
-    :type: typing.TypeVar
+.. type:: AnyOptimizer
+    :canonical: TypeVar(bound=Optimizer)
 
     :ref:`Constrained type variable <std:typing-constrained-typevar>` that
-    allows to be generic over any `Optimizer`.
+    allows to be generic over any optimizer.
 
     If you use a type checker, it allows code like this to pass:
 
