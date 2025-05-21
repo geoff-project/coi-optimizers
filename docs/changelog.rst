@@ -18,10 +18,10 @@ Unreleased
   (to 0.25) and *rhoend* (to 0.025). This is motivated by the new
   default option *scaling_within_bounds*, which scales parameters into the
   interval [0; 1] instead of the conventional [−1; +1].
-- ADD: `Wrappers <api/third_party_wrappers#>` around the Bayesian and RCDS optimizers of `XOpt
-  <https://xopt.xopt.org/>`__.
-- FIX: :doc:`SciPy wrappers <api/third_party_wrappers>` erroneously returned a
-  `numpy.bool` instead of a `bool` in `OptimizeResult.success`.
+- ADD: :ref:`Wrappers <Xopt wrappers>` around the Bayesian and RCDS optimizers
+  of `Xopt <https://xopt.xopt.org/>`__.
+- FIX: :ref:`SciPy wrappers` erroneously returned a `numpy.bool` instead of
+  a `bool` in `OptimizeResult.success`.
 - FIX: Tests failed on Python 3.9 and any modern :doc:`importlib-metadata
   <imp:index>`.
 
@@ -46,8 +46,8 @@ v2.0.0
 - BREAKING: Update minimum :doc:`NumPy <np:index>` version to 1.22.
 - BREAKING: Update minimum :doc:`cernml-extremum-seeking <ces:index>` version
   to 4.0.
-- FIX: The documentation for :doc:`SciPy wrappers <api/third_party_wrappers>`
-  now documents the meaning of each parameter.
+- FIX: The documentation for :ref:`SciPy wrappers` now documents the meaning of
+  each parameter.
 
 v1.2.0
 ------

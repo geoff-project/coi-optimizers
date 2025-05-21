@@ -4,8 +4,8 @@
 ..
 .. SPDX-License-Identifier: GPL-3.0-or-later OR EUPL-1.2+
 
-Integration with the COI
-========================
+COI Integration Functions
+=========================
 
 .. currentmodule:: cernml.optimizers
 

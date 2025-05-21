@@ -60,6 +60,7 @@ extensions = [
     "fix_napoleon_attributes_type",
     "fix_xrefs",
     "sphinx.ext.autodoc",
+    "sphinx.ext.autosectionlabel",
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
     "sphinx_inline_tabs",

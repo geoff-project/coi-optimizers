@@ -9,8 +9,8 @@
 Wrappers for Third-Party Packages
 =================================
 
-SciPy
------
+SciPy Wrappers
+--------------
 
 .. automodule:: cernml.optimizers.scipy
 
@@ -18,30 +18,30 @@ SciPy
    .. autoclass:: NelderMeadSimplex
    .. autoclass:: Powell
 
-Scikit-Optimize
----------------
+Scikit-Optimize Wrappers
+------------------------
 
 .. automodule:: cernml.optimizers.skopt
 
    .. autoclass:: SkoptBayesian
 
-Py-BOBYQA
----------
+Py-BOBYQA Wrappers
+------------------
 
 .. automodule:: cernml.optimizers.bobyqa
 
    .. autoclass:: Bobyqa
    .. autoexception:: BobyqaException
 
-CernML Extremum Seeking
------------------------
+CernML Extremum Seeking Wrappers
+--------------------------------
 
 .. automodule:: cernml.optimizers.extremum_seeking
 
    .. autoclass:: ExtremumSeeking
 
-Xopt
-----
+Xopt Wrappers
+-------------
 
 .. automodule:: cernml.optimizers.xopt
 
