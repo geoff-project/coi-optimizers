@@ -182,13 +182,16 @@ def test_skopt_bad_num_calls() -> None:
 def test_gym_compatibility_shim(
     problem: coi.SingleOptimizable, optimizer: optimizers.Optimizer
 ) -> None:
-    try:
-        import gym  # type: ignore[import-untyped]
-    except AttributeError:
-        pytest.skip("gym incompatible with installed version of importlib_metadata")
+    class Box:
+        __module__ = "gym.spaces.box"
+        low: NDArray[np.double]
+        high: NDArray[np.double]
+        dtype = np.double
 
-    space = gym.spaces.Box(-12.0, 12.0, shape=[3, 2, 1], dtype=np.double)
-    problem.optimization_space = t.cast(Box, space)
+    space = Box()
+    space.low = -12.0 * np.ones((3, 2, 1))
+    space.high = -12.0 * np.ones((3, 2, 1))
+    problem.optimization_space = t.cast(t.Any, space)
     solve = optimizers.make_solve_func(optimizer, problem)
     variables = inspect.getclosurevars(solve)
     low, high = variables.nonlocals["bounds"]
