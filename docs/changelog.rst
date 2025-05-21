@@ -12,6 +12,8 @@ Changelog
 Unreleased
 ----------
 
+- BREAKING: Add to `.Bobyqa` a new parameter *scaling_within_bounds* that is
+  true by default. This changes the behavior of the optimizer!
 - FIX: :doc:`SciPy wrappers <api/third_party_wrappers>` erroneously returned a
   `numpy.bool` instead of a `bool` in `OptimizeResult.success`.
 - FIX: Tests failed on Python 3.9 and any modern :doc:`importlib-metadata

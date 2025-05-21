@@ -67,6 +67,7 @@ class Bobyqa(Optimizer, coi.Configurable):
         nsamples: int = 1,
         seek_global_minimum: bool = False,
         objfun_has_noise: bool = False,
+        scaling_within_bounds: bool = True,
     ) -> None:
         self.maxfun = maxfun
         self.rhobeg = rhobeg
@@ -74,6 +75,7 @@ class Bobyqa(Optimizer, coi.Configurable):
         self.nsamples = nsamples
         self.seek_global_minimum = seek_global_minimum
         self.objfun_has_noise = objfun_has_noise
+        self.scaling_within_bounds = scaling_within_bounds
         # Quick and dirty validation of the arguments.
         config = self.get_config()
         self.apply_config(config.validate_all(config.get_field_values()))
@@ -101,6 +103,7 @@ class Bobyqa(Optimizer, coi.Configurable):
                 seek_global_minimum=self.seek_global_minimum,
                 objfun_has_noise=self.objfun_has_noise,
                 nsamples=lambda *_: nsamples,
+                scaling_within_bounds=self.scaling_within_bounds,
             )
             if res.flag < 0:
                 raise BobyqaException(res.msg)
@@ -152,6 +155,11 @@ class Bobyqa(Optimizer, coi.Configurable):
             self.objfun_has_noise,
             help="Enable additional logic to handle non-deterministic environments",
         )
+        config.add(
+            "scaling_within_bounds",
+            self.scaling_within_bounds,
+            help="Internally parameters into the space [0; 1]",
+        )
         return config
 
     @override
@@ -162,3 +170,4 @@ class Bobyqa(Optimizer, coi.Configurable):
         self.nsamples = values.nsamples
         self.seek_global_minimum = values.seek_global_minimum
         self.objfun_has_noise = values.objfun_has_noise
+        self.scaling_within_bounds = values.scaling_within_bounds
