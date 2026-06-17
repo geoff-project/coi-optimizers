@@ -127,6 +127,7 @@ ignore = [
 allowed-confusables = [' ', '–', '×']
 flake8-pytest-style.fixture-parentheses = false
 isort.split-on-trailing-comma = true
+isort.known-first-party = ['cernml.*']
 pycodestyle.max-doc-length = 72
 pydocstyle.convention = 'google'
 pydocstyle.ignore-decorators = ['overload', 'overrides']
