@@ -76,7 +76,7 @@ class Cobyla(Optimizer, coi.Configurable):
 
         def solve(objective: Objective, x_0: NDArray[np.floating]) -> OptimizeResult:
             res = scipy.optimize.minimize(
-                objective,
+                _chain(objective, float),
                 method="COBYLA",
                 x0=x_0,
                 constraints=constraints,
@@ -186,7 +186,7 @@ class NelderMeadSimplex(Optimizer, coi.Configurable):
 
         def solve(objective: Objective, x_0: NDArray[np.floating]) -> OptimizeResult:
             res = scipy.optimize.minimize(
-                objective,
+                _chain(objective, float),
                 method="Nelder-Mead",
                 x0=x_0,
                 tol=self.tolerance,
@@ -317,7 +317,7 @@ class Powell(Optimizer, coi.Configurable):
 
         def solve(objective: Objective, x_0: NDArray[np.floating]) -> OptimizeResult:
             res = scipy.optimize.minimize(
-                objective,
+                _chain(objective, float),
                 method="Powell",
                 x0=x_0,
                 tol=self.tolerance,
@@ -373,3 +373,21 @@ class Powell(Optimizer, coi.Configurable):
         self.tolerance = values.tolerance
         self.initial_step_size = values.initial_step_size
         self.verbose = values.verbose
+
+
+A = t.TypeVar("A")
+B = t.TypeVar("B")
+C = t.TypeVar("C")
+
+
+def _chain(f: t.Callable[[A], B], g: t.Callable[[B], C], /) -> t.Callable[[A], C]:
+    """Chain two functions together.
+
+    This is necessary because `Objective` returns a `SupportsFloat`, but
+    `scipy.optimize.minimize()` requires a `float`.
+    """
+
+    def chained(x: A) -> C:
+        return g(f(x))
+
+    return chained
