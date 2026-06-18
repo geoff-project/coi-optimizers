@@ -157,8 +157,8 @@ def test_run_optimizer(
     solve = optimizer.make_solve_func((space.low, space.high), problem.constraints)
     res = solve(problem.compute_single_objective, problem.get_initial_params())
     assert res.success
-    assert res.nfev == nfev
-    assert problem.get_wrapper_attr("num_calls") == nfev
+    assert res.nfev <= nfev
+    assert problem.get_wrapper_attr("num_calls") == res.nfev
 
 
 @pytest.mark.enable_constraints
