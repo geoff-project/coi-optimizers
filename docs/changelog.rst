@@ -14,6 +14,11 @@ Unreleased
 
 No changes yet!
 
+v4.0.1
+------
+
+- FIX: Broken docs on Sphinx 9 and due to changed Xopt API.
+
 v4.0.0
 ------
 

@@ -128,10 +128,15 @@ def acc_py_docs_link(repo: str) -> str:
     return f"https://acc-py.web.cern.ch/gitlab/{repo}/docs/stable/"
 
 
+def rtd_link(name: str, branch: str = "latest") -> str:
+    """A URL pointing to a Read The Docs project."""
+    return f"https://{name}.readthedocs.io/en/{branch}"
+
+
 intersphinx_mapping = {
     "coi": (acc_py_docs_link("geoff/cernml-coi"), None),
     "ces": (acc_py_docs_link("geoff/optimizers/cernml-extremum-seeking"), None),
-    "imp": ("https://importlib-metadata.readthedocs.io/en/latest/", None),
+    "imp": (rtd_link("importlib-metadata"), None),
     "mpl": ("https://matplotlib.org/stable/", None),
     "np": ("https://numpy.org/doc/stable/", None),
     "std": ("https://docs.python.org/3/", None),
@@ -139,11 +144,11 @@ intersphinx_mapping = {
     "skopt": ("https://scikit-optimize.github.io/stable/", None),
     "bobyqa": ("https://numericalalgorithmsgroup.github.io/pybobyqa/build/html/", None),
     "xopt": ("https://xopt.xopt.org/", None),
+    "gest": (rtd_link("generator-standard"), None),
 }
 
 
 # -- Options for custom extension FixXrefs -----------------------------
-
 
 fix_xrefs_try_typing = True
 fix_xrefs_try_class_as_obj = True
@@ -151,6 +156,7 @@ fix_xrefs_rules = [
     {"pattern": r"^Constraint$", "reftarget": ("const", "cernml.coi.Constraint")},
     {"pattern": r"^NDArray$", "reftarget": ("const", "numpy.typing.NDArray")},
     {"pattern": r"^np\.", "reftarget": ("sub", "numpy."), "contnode": ("sub", "")},
+    {"pattern": r"\bVOCS$", "reftarget": ("const", "gest_api.vocs.VOCS")},
     {
         "pattern": r"^t\.",
         "reftarget": ("sub", "typing."),
