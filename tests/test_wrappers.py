@@ -317,23 +317,28 @@ def test_xopt_bayesian_constraints(optimizer: XoptBayesian) -> None:
 
     solve(objective, x0)
     assert xopt is not None
-    assert xopt.vocs.constraints == {
-        "c1-lb1": ["GREATER_THAN", -5.0],
-        "c1-lb2": ["GREATER_THAN", -4.0],
-        "c1-lb3": ["GREATER_THAN", -3.0],
-        "c2-ub1": ["LESS_THAN", 1.0],
-        "c2-ub2": ["LESS_THAN", 2.0],
-        "c2-ub3": ["LESS_THAN", 3.0],
-        "c4-lb1": ["GREATER_THAN", -1.0],
-        "c4-ub1": ["LESS_THAN", 1.0],
-        "c5-lb1": ["GREATER_THAN", -5.0],
-        "c5-lb2": ["GREATER_THAN", -4.0],
-        "c5-lb3": ["GREATER_THAN", -3.0],
-        "c6-ub1": ["LESS_THAN", 1.0],
-        "c6-ub2": ["LESS_THAN", 2.0],
-        "c6-ub3": ["LESS_THAN", 3.0],
-        "c8-lb": ["GREATER_THAN", -2.0],
-        "c8-ub": ["LESS_THAN", 2.0],
+    # Coerce to tuple: On Python 3.9, the last supported Xopt version
+    # returns lists instead.
+    translated_constraints = {
+        name: tuple(c) for name, c in xopt.vocs.constraints.items()
+    }
+    assert translated_constraints == {
+        "c1-lb1": ("GREATER_THAN", -5.0),
+        "c1-lb2": ("GREATER_THAN", -4.0),
+        "c1-lb3": ("GREATER_THAN", -3.0),
+        "c2-ub1": ("LESS_THAN", 1.0),
+        "c2-ub2": ("LESS_THAN", 2.0),
+        "c2-ub3": ("LESS_THAN", 3.0),
+        "c4-lb1": ("GREATER_THAN", -1.0),
+        "c4-ub1": ("LESS_THAN", 1.0),
+        "c5-lb1": ("GREATER_THAN", -5.0),
+        "c5-lb2": ("GREATER_THAN", -4.0),
+        "c5-lb3": ("GREATER_THAN", -3.0),
+        "c6-ub1": ("LESS_THAN", 1.0),
+        "c6-ub2": ("LESS_THAN", 2.0),
+        "c6-ub3": ("LESS_THAN", 3.0),
+        "c8-lb": ("GREATER_THAN", -2.0),
+        "c8-ub": ("LESS_THAN", 2.0),
     }
     assert xopt.data.T.to_dict() == {
         0: {
