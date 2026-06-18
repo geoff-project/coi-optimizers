@@ -19,6 +19,7 @@ v4.0.1
 
 - FIX: Broken docs on Sphinx 9 and due to changed Xopt API.
 - FIX: Tests broken by Xopt 2.7.
+- FIX: Incompatibility between Xopt 2.7 and Botorch 0.18.
 
 v4.0.0
 ------

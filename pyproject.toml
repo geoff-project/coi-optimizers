@@ -53,7 +53,8 @@ bobyqa = ['Py-BOBYQA ~= 1.2']
 cernml-es = ['cernml-extremum-seeking >= 3.0, < 5']
 scipy = ['scipy >= 1.1']
 skopt = ['scikit-optimize ~= 0.9.0']
-xopt = ['xopt ~= 2.0']
+# Limit on Botorch prevents incompatibilities that break our tests.
+xopt = ['xopt ~= 2.0', 'botorch < 0.18']
 all = ['cernml-coi-optimizers[bobyqa,cernml-es,scipy,skopt,xopt]']
 examples = [
     'cernml-coi-optimizers[all]',
