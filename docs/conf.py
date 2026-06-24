@@ -125,7 +125,7 @@ napoleon_numpy_docstring = False
 
 def acc_py_docs_link(repo: str) -> str:
     """A URL pointing to the Acc-Py docs server."""
-    return f"https://acc-py.web.cern.ch/gitlab/{repo}/docs/stable/"
+    return f"https://acc-py.web.cern.ch/gitlab/{repo}/docs/stable"
 
 
 def rtd_link(name: str, branch: str = "latest") -> str:
