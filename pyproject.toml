@@ -46,7 +46,12 @@ classifiers = [
 ]
 
 [project.urls]
-gitlab = 'https://gitlab.cern.ch/geoff/cerml-coi-optimizers'
+'Homepage' = 'https://geoff.docs.cern.ch/'
+'Download' = 'https://gitlab.cern.ch/geoff/cernml-coi-optimizers/-/releases'
+'Documentation' = 'https://geoff.docs.cern.ch/cernml-coi-optimizers/'
+'Internal Documentation Mirror' = 'https://acc-py.web.cern.ch/gitlab/geoff/cernml-coi-optimizers/'
+'Source Code' = 'https://gitlab.cern.ch/geoff/cernml-coi-optimizers'
+'Bug Tracker' = 'https://gitlab.cern.ch/geoff/cernml-coi-optimizers/-/work_items'
 
 [project.optional-dependencies]
 bobyqa = ['Py-BOBYQA ~= 1.2']
