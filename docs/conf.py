@@ -4,6 +4,12 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later OR EUPL-1.2+
 
+# pylint: disable = import-outside-toplevel
+# pylint: disable = invalid-name
+# pylint: disable = redefined-builtin
+# pylint: disable = too-many-arguments
+# pylint: disable = unused-argument
+
 """Configuration file for the Sphinx documentation builder.
 
 This file only contains a selection of the most common options. For a
@@ -19,9 +25,9 @@ import sys
 from pathlib import Path
 
 if sys.version_info < (3, 10):
-    import importlib_metadata as metadata
+    import importlib_metadata
 else:
-    from importlib import metadata
+    import importlib.metadata as importlib_metadata
 
 
 ROOTDIR = Path(__file__).absolute().parent.parent
@@ -30,7 +36,7 @@ ROOTDIR = Path(__file__).absolute().parent.parent
 # -- Project information -----------------------------------------------
 
 project = "cernml-coi-optimizers"
-dist = metadata.distribution(project)
+dist = importlib_metadata.distribution(project)
 
 copyright = "2023-2025 GSI Helmholtzzentrum für Schwerionenforschung"
 author = "Penny Madysa"
@@ -89,6 +95,8 @@ default_role = "py:obj"
 # Use one line per argument for long signatures.
 maximum_signature_line_length = 89
 
+suppress_warnings = ["autosectionlabel.changelog"]
+
 # -- Options for HTML output -------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation
@@ -98,10 +106,11 @@ html_last_updated_fmt = "%b %d %Y"
 html_theme_options = {
     "root_url": "https://acc-py.web.cern.ch/",
     "root_name": "Acc-Py Documentation server",
+    "hosted_on": "the <a href='https://acc-py.web.cern.ch/'>Acc-Py Documentation Server</a>",
     "license_url": license_url,
     "issues_url": issues_url,
 }
-templates_path = ["./_theme/"]
+templates_path = ["./_templates/"]
 
 # -- Options for Autodoc -----------------------------------------------
 
