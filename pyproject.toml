@@ -30,7 +30,7 @@ dependencies = [
     'typing-extensions >= 4.3.0; python_version<"3.11"',
 ]
 classifiers = [
-    'Development Status :: 5 - Stable',
+    'Development Status :: 5 - Production/Stable',
     'Environment :: Console',
     'Intended Audience :: Science/Research',
     'Natural Language :: English',

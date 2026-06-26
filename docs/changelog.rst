@@ -14,11 +14,16 @@ Unreleased
 
 No changes yet!
 
+v4.0.3
+------
+
+- OTHER: Fix PyPI classifiers.
+- OTHER: The package is now released on PyPI.
+
 v4.0.2
 ------
 
 - OTHER: Update project links to point at the new website https://geoff.docs.cern.ch/.
-- OTHER: The package is now released on PyPI.
 
 v4.0.1
 ------
