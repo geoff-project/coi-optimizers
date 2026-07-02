@@ -14,6 +14,11 @@ Changelog
 Unreleased
 ----------
 
+No changes yet!
+
+v4.x
+----
+
 v4.0.4
 ^^^^^^
 
@@ -24,9 +29,6 @@ Bug fixes
 Other changes
 ~~~~~~~~~~~~~
 - Harmonize docs theme of Geoff packages.
-
-v4.x
-----
 
 v4.0.3
 ^^^^^^
