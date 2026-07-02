@@ -466,22 +466,22 @@ def _translate_constraints(
     constraints: t.Sequence[coi.Constraint], /
 ) -> dict[str, tuple[xopt.vocs.ConstraintEnum, float]]:
     """Helper for `get_vocs()`."""
-    ConstraintEnum = xopt.vocs.ConstraintEnum
+    Constraint = xopt.vocs.ConstraintEnum
     result = {}
     for i_c, c in enumerate(constraints, 1):
-        shape = np.shape(c.lb)
-        assert shape == np.shape(c.ub), c
+        lb, ub = np.broadcast_arrays(c.lb, c.ub)
+        shape = np.shape(lb)
         if not shape:
-            if not np.isneginf(c.lb):
-                result[f"c{i_c}-lb"] = (ConstraintEnum.GREATER_THAN, float(c.lb))
-            if not np.isposinf(c.ub):
-                result[f"c{i_c}-ub"] = (ConstraintEnum.LESS_THAN, float(c.ub))
+            if not np.isneginf(lb):
+                result[f"c{i_c}-lb"] = (Constraint.GREATER_THAN, float(lb))
+            if not np.isposinf(ub):
+                result[f"c{i_c}-ub"] = (Constraint.LESS_THAN, float(ub))
         elif len(shape) == 1:
-            for i_b, (lb, ub) in enumerate(zip(c.lb, c.ub), 1):
-                if not np.isneginf(lb):
-                    result[f"c{i_c}-lb{i_b}"] = (ConstraintEnum.GREATER_THAN, lb.item())
-                if not np.isposinf(ub):
-                    result[f"c{i_c}-ub{i_b}"] = (ConstraintEnum.LESS_THAN, ub.item())
+            for i_b, (low, high) in enumerate(zip(lb, ub), 1):
+                if not np.isneginf(low):
+                    result[f"c{i_c}-lb{i_b}"] = (Constraint.GREATER_THAN, low.item())
+                if not np.isposinf(high):
+                    result[f"c{i_c}-ub{i_b}"] = (Constraint.LESS_THAN, high.item())
         else:
             raise ValueError(f"constraints must be at most 1D, not {len(shape)}D")
 
@@ -502,18 +502,19 @@ def eval_constraints(
     result = {}
     for i_c, c in enumerate(constraints, 1):
         value = _eval_constraint(c, params)
-        assert np.shape(value) == np.shape(c.lb), np.shape(value)
         ndim = np.ndim(value)
+        lb = np.broadcast_to(c.lb, np.shape(value))
+        ub = np.broadcast_to(c.ub, np.shape(value))
         if not ndim:
-            if not np.isneginf(c.lb):
+            if not np.isneginf(lb):
                 result[f"c{i_c}-lb"] = float(value)
-            if not np.isposinf(c.ub):
+            if not np.isposinf(ub):
                 result[f"c{i_c}-ub"] = float(value)
         elif ndim == 1:
-            for i_b, (v, lb, ub) in enumerate(zip(value, c.lb, c.ub), 1):
-                if not np.isneginf(lb):
+            for i_b, (v, low, high) in enumerate(zip(value, lb, ub), 1):
+                if not np.isneginf(low):
                     result[f"c{i_c}-lb{i_b}"] = v.item()
-                if not np.isposinf(ub):
+                if not np.isposinf(high):
                     result[f"c{i_c}-ub{i_b}"] = v.item()
         else:
             raise ValueError(f"constraints must be at most 1D, not {ndim}D")

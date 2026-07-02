@@ -17,6 +17,10 @@ Unreleased
 v4.0.4
 ^^^^^^
 
+Bug fixes
+~~~~~~~~~
+- Fix broadcasting of constraints into the optimization space for Xopt.
+
 Other changes
 ~~~~~~~~~~~~~
 - Harmonize docs theme of Geoff packages.
